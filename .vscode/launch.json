@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BackendApplication<formula1>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "congngheweb.f1.formula1.BackendApplication",
+            "projectName": "formula1",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

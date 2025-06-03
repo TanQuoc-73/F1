@@ -1,0 +1,38 @@
+package congngheweb.f1.formula1.controller;
+
+import congngheweb.f1.formula1.model.Team;
+import congngheweb.f1.formula1.service.TeamService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/teams")
+@CrossOrigin(origins = "*") 
+public class TeamController {
+
+    @Autowired
+    private TeamService teamService;
+
+    @GetMapping
+    public List<Team> getAllTeams() {
+        return teamService.getAllTeams();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Team> getTeamById(@PathVariable Long id) {
+        return teamService.getTeamById(id);
+    }
+
+    @PostMapping
+    public Team createTeam(@RequestBody Team team) {
+        return teamService.createTeam(team);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTeam(@PathVariable Long id) {
+        teamService.deleteTeam(id);
+    }
+}
