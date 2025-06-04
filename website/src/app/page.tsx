@@ -100,39 +100,59 @@ export default function Home() {
 
       {/* Page2 */}
       <div id="page2" className="relative h-screen flex items-center justify-center z-20 snap-center ">
-        <div className="text-center bg-black/50 py-6 shadow-lg rounded-2xl w-screen ">
-          <h1 className="text-5xl text-white font-extrabold">Experience the Speed</h1>
-          <p className="text-xl text-gray-200">Join the adrenaline-pumping world of Formula 1.</p>
-          <div className="relative w-full h-96 overflow-hidden">
-            <img
-              src="/img/ferrarif1.png"
-              alt="Formula 1 Car"
-              className="w-full h-full object-cover transition-transform duration-500 hover:scale-95"
-            />
-            {/* Sparkle effect */}
-            <div className="sparkles-container">
-              {sparkleStyles.map((spark, i) => (
-                <div
-                  key={i}
-                  className="sparkle"
-                  style={{
-                    left: spark.left,
-                    animationDelay: spark.animationDelay,
-                    ["--x-offset" as any]: spark.xOffset,
-                  }}
-                />
-              ))}
+        <div className="text-center bg-black/60 backdrop-blur-sm py-8 sm:py-12 px-6 shadow-2xl rounded-xl max-w-4xl w-full mx-auto"> {/* Added mx-auto and max-width */}
+            <h1 className="text-4xl sm:text-5xl text-white font-extrabold mb-3 text-shadow">Experience the <span className="text-red-500">Speed</span></h1>
+            <p className="text-lg sm:text-xl text-gray-200 mb-8">
+              Feel the Gs, hear the roar, witness the precision.
+            </p>
+            <div className="relative w-full aspect-video max-h-[50vh] overflow-hidden rounded-lg group shadow-xl"> {/* Aspect ratio and max height */}
+              <img
+                src="/img/ferrarif1.png"
+                alt="Formula 1 Car in action" // More descriptive alt text
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" // Scale up on hover
+              />
+              {/* Sparkle effect */}
+              <div className="sparkles-container absolute inset-0">
+                {sparkleStyles.map((spark, i) => (
+                  <div
+                    key={i}
+                    className="sparkle"
+                    style={{
+                      left: spark.left,
+                      animationDelay: spark.animationDelay,
+                      ["--x-offset" as any]: spark.xOffset,
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Page3 */}
       <div id="page3" className="relative h-screen w-full flex items-center justify-center z-10 snap-center" > 
-        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10 my-10"> 
-          <h1 className="text-4xl text-white font-bold">F1 Highlights</h1> 
-          <p className="text-xl text-gray-300 mt-4">Catch the latest race moments</p> 
-        </div> 
+        <div className="max-w-5xl w-full text-center bg-black/60 backdrop-blur-sm p-8 sm:p-12 shadow-2xl rounded-xl">
+            <h1 className="text-4xl sm:text-5xl text-white font-bold mb-6 text-shadow">Race <span className="text-red-500">Highlights</span></h1>
+            <p className="text-lg sm:text-xl text-gray-300 mt-2 mb-10">
+              Relive the most iconic moments and breathtaking overtakes from recent races.
+            </p>
+            {/* Example Grid for Highlights - Replace with actual content */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { title: "Monaco GP Drama", img: "/img/highlight1.jpg", link:"#"},
+                { title: "Silverstone Showdown", img: "/img/highlight2.jpg", link:"#"},
+                { title: "Italian GP Triumph", img: "/img/highlight3.jpg", link:"#"}
+              ].map((highlight, index) => (
+                <a key={index} href={highlight.link} className="block bg-gray-800/70 rounded-lg overflow-hidden shadow-lg group transition-all duration-300 hover:shadow-red-500/40 hover:scale-105">
+                  <img src={highlight.img} alt={highlight.title} className="w-full h-40 object-cover"/>
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold text-white mb-1">{highlight.title}</h3>
+                    <p className="text-sm text-gray-400 group-hover:text-red-400 transition-colors">Watch now &rarr;</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
       </div>
     </div>
   );
