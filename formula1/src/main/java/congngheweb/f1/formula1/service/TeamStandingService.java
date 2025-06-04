@@ -12,21 +12,21 @@ import java.util.Optional;
 public class TeamStandingService {
 
     @Autowired
-    private TeamStandingRepository repository;
+    private TeamStandingRepository teamStandingRepository;
 
     public List<TeamStanding> getAll() {
-        return repository.findAll();
+        return teamStandingRepository.findAll();
     }
 
     public Optional<TeamStanding> getById(Long id) {
-        return repository.findById(id);
+        return teamStandingRepository.findById(id);
     }
 
-    public TeamStanding create(TeamStanding standing) {
-        return repository.save(standing);
+    public TeamStanding create(TeamStanding teamStanding) {
+        return teamStandingRepository.save(teamStanding);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        teamStandingRepository.deleteById(id);
     }
 }
