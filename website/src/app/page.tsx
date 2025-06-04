@@ -1,9 +1,20 @@
 "use client";
 
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [sparkleStyles, setSparkleStyles] = useState<{ left: string; animationDelay: string; xOffset: string }[]>([]);
+
+  useEffect(() => {
+    const styles = [...Array(10)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 0.5}s`,
+      xOffset: `${(Math.random() - 0.5) * 100}px`,
+    }));
+    setSparkleStyles(styles);
+  }, []);
+
   useEffect(() => {
     const sections = document.querySelectorAll(".snap-center");
     let isScrolling = false;
@@ -22,7 +33,7 @@ export default function Home() {
       if (isScrolling) return;
       isScrolling = true;
 
-      const delta = e.deltaY ?? e.delta ?? -e.wheelDelta!; // Hỗ trợ các trình duyệt khác nhau
+      const delta = e.deltaY ?? e.delta ?? -e.wheelDelta!;
       const currentScroll = window.scrollY;
       let targetSection: Element | null = null;
 
@@ -30,17 +41,11 @@ export default function Home() {
         const sectionTop = (section as HTMLElement).offsetTop;
 
         if (delta > 0 && sectionTop > currentScroll + window.innerHeight / 2) {
-          if (
-            !targetSection ||
-            sectionTop < (targetSection as HTMLElement).offsetTop
-          ) {
+          if (!targetSection || sectionTop < (targetSection as HTMLElement).offsetTop) {
             targetSection = section;
           }
         } else if (delta < 0 && sectionTop < currentScroll) {
-          if (
-            !targetSection ||
-            sectionTop > (targetSection as HTMLElement).offsetTop
-          ) {
+          if (!targetSection || sectionTop > (targetSection as HTMLElement).offsetTop) {
             targetSection = section;
           }
         }
@@ -49,19 +54,17 @@ export default function Home() {
       if (targetSection) {
         window.scrollTo({
           top: (targetSection as HTMLElement).offsetTop,
-          behavior: "smooth", // Chuyển mượt mà
+          behavior: "smooth",
         });
       }
 
       setTimeout(() => {
         isScrolling = false;
-      }, 600); // Độ trễ cho cuộn mượt
+      }, 600);
     };
 
-    // Thêm sự kiện wheel cho chuột và touchpad
     window.addEventListener("wheel", handleScroll, { passive: false });
 
-    // Hỗ trợ touch trên di động
     let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY = e.touches[0].clientY;
@@ -76,7 +79,6 @@ export default function Home() {
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
 
-    // Dọn dẹp sự kiện khi component unmount
     return () => {
       window.removeEventListener("wheel", handleScroll);
       window.removeEventListener("touchstart", handleTouchStart);
@@ -85,7 +87,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)] snap-y snap-mandatory gap-4 p-4">
+    <div className="relative flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)] snap-y snap-mandatory">
       <Head>
         <title>Formula 1 Experience</title>
         <meta name="description" content="Immerse yourself in the thrilling world of Formula 1" />
@@ -114,18 +116,19 @@ export default function Home() {
       {/* Page1 */}
       <div
         id="page1"
-        className="relative h-screen w-full flex flex-col items-center justify-center bg-black/30 z-10 snap-center rounded-2xl shadow-lg"
+        className="relative h-screen w-full flex items-center justify-center z-10 snap-center"
       >
-        <h1 className="text-6xl text-gray-200 font-bold tracking-tight">FORMULA 1</h1>
-        <p className="text-2xl text-gray-300 mt-4">Welcome to my F1 website</p>
+        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center p-6 shadow-lg">
+          <h1 className="text-6xl text-gray-200 font-bold tracking-tight">FORMULA 1</h1>
+          <p className="text-2xl text-gray-300 mt-4">Welcome to my F1 website</p>
+        </div>
       </div>
 
       {/* Page2 */}
       <div
         id="page2"
-        className="relative h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 z-20 snap-center rounded-2xl shadow-lg"
-      >
-        <div className="max-w-4xl mx-auto text-center px-4 relative">
+        className="relative h-screen w-full flex items-center justify-center z-20 snap-center" >
+        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10">
           <h1 className="text-5xl text-white font-extrabold mb-6 animate-fade-in">
             Experience the Speed
           </h1>
@@ -133,12 +136,12 @@ export default function Home() {
             Join the adrenaline-pumping world of Formula 1 with exclusive race updates, driver
             insights, and more.
           </p>
-          <div className="relative w-full h-64 sm:h-96 rounded-lg overflow-hidden mb-8 animate-fade-in delay-200">
+          <div className="relative w-full h-100 sm:h-96 rounded-lg overflow-hidden mb-8 animate-fade-in delay-200">
             <img
-              src="/images/f1-car.jpg" // Thay bằng hình ảnh thực tế
+              src="/img/ferrarif1.png" 
               alt="Formula 1 Car"
-              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-            />
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-95"/>
+            
             {/* Sparkle effect */}
             <div className="sparkles-container">
               {[...Array(10)].map((_, i) => (
@@ -166,10 +169,12 @@ export default function Home() {
       {/* Page3 */}
       <div
         id="page3"
-        className="relative h-screen w-full flex flex-col items-center justify-center bg-black/30 z-10 snap-center rounded-2xl shadow-lg"
+        className="relative h-screen w-full flex items-center justify-center z-10 snap-center"
       >
-        <h1 className="text-4xl text-white font-bold">F1 Highlights</h1>
-        <p className="text-xl text-gray-300 mt-4">Catch the latest race moments</p>
+        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10 my-10">
+          <h1 className="text-4xl text-white font-bold">F1 Highlights</h1>
+          <p className="text-xl text-gray-300 mt-4">Catch the latest race moments</p>
+        </div>
       </div>
     </div>
   );

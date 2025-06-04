@@ -32,11 +32,11 @@ html {
 }
 
 ::-webkit-scrollbar {
-  width: 8px; /* Chiều rộng thanh cuộn */
+  width: 4px; /* Chiều rộng thanh cuộn */
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Nền trong suốt */
+  background: transparent; 
 }
 
 ::-webkit-scrollbar-thumb {
@@ -45,7 +45,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff0000; /* Hover sáng hơn */
+  background: #ff0000; 
 }
 
 /* Scroll snap */
@@ -55,19 +55,6 @@ html {
 
 .snap-center {
   scroll-snap-align: center;
-}
-
-/* Container chính có padding để tạo không gian trống */
-.p-4 {
-  padding: 1rem; /* Khoảng cách 16px ở tất cả các cạnh */
-}
-
-/* Style cho các section */
-.snap-center {
-  max-width: 90vw; /* Giảm chiều rộng để tạo khoảng trống ngang */
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ để nổi bật */
 }
 
 /* Fade-in animation */
@@ -156,8 +143,5 @@ html {
   }
   .h-96 {
     height: 16rem;
-  }
-  .snap-center {
-    max-width: 95vw; /* Tăng chiều rộng tương đối trên di động */
   }
 }
