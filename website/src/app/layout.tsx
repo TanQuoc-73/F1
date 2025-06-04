@@ -4,7 +4,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
-import { cookies } from "next/headers";
 
 const barlow = Barlow({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -21,10 +20,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = cookies().get("token")?.value;
-  // Nếu dùng JWT, decode để lấy username
-  // const username = token ? decodeToken(token) : null;
-
   return (
     <html lang="vi">
       <body className={`${barlow.className} antialiased bg-gray-100`}>

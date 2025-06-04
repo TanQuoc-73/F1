@@ -4,56 +4,49 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [sparkleStyles, setSparkleStyles] = useState<{ left: string; animationDelay: string; xOffset: string }[]>([]);
+  const [sparkleStyles, setSparkleStyles] = useState<
+    { left: string; animationDelay: string; xOffset: string }[]
+  >([]);
 
   useEffect(() => {
-    const styles = [...Array(10)].map(() => ({
-      left: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 0.5}s`,
-      xOffset: `${(Math.random() - 0.5) * 100}px`,
-    }));
-    setSparkleStyles(styles);
+    setSparkleStyles(
+      Array.from({ length: 10 }).map(() => ({
+        left: `${Math.random() * 100}%`,
+        animationDelay: `${Math.random() * 0.5}s`,
+        xOffset: `${(Math.random() - 0.5) * 100}px`,
+      }))
+    );
   }, []);
 
   useEffect(() => {
     const sections = document.querySelectorAll(".snap-center");
     let isScrolling = false;
 
-    interface ScrollEvent {
-      deltaY?: number;
-      delta?: number;
-      wheelDelta?: number;
-    }
-
-    interface TouchEventLike {
-      touches: { clientY: number }[];
-    }
-
-    const handleScroll = (e: ScrollEvent) => {
+    const handleScroll = (e: WheelEvent) => {
       if (isScrolling) return;
       isScrolling = true;
 
-      const delta = e.deltaY ?? e.delta ?? -e.wheelDelta!;
+      const delta = e.deltaY;
       const currentScroll = window.scrollY;
-      let targetSection: Element | null = null;
+      let targetSection: HTMLElement | null = null;
 
-      sections.forEach((section: Element) => {
+      sections.forEach((section) => {
         const sectionTop = (section as HTMLElement).offsetTop;
 
         if (delta > 0 && sectionTop > currentScroll + window.innerHeight / 2) {
-          if (!targetSection || sectionTop < (targetSection as HTMLElement).offsetTop) {
-            targetSection = section;
+          if (!targetSection || sectionTop < targetSection.offsetTop) {
+            targetSection = section as HTMLElement;
           }
         } else if (delta < 0 && sectionTop < currentScroll) {
-          if (!targetSection || sectionTop > (targetSection as HTMLElement).offsetTop) {
-            targetSection = section;
+          if (!targetSection || sectionTop > targetSection.offsetTop) {
+            targetSection = section as HTMLElement;
           }
         }
       });
 
       if (targetSection) {
         window.scrollTo({
-          top: (targetSection as HTMLElement).offsetTop,
+          top: targetSection.offsetTop,
           behavior: "smooth",
         });
       }
@@ -63,31 +56,15 @@ export default function Home() {
       }, 600);
     };
 
-    window.addEventListener("wheel", handleScroll, { passive: false });
-
-    let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isScrolling) return;
-      const touchEndY = e.touches[0].clientY;
-      const delta = touchStartY - touchEndY;
-      handleScroll({ deltaY: delta });
-    };
-
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("wheel", handleScroll);
 
     return () => {
       window.removeEventListener("wheel", handleScroll);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
   return (
-    <div className="relative flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)] snap-y snap-mandatory">
+    <div className="relative flex flex-col min-h-screen font-sans snap-y snap-mandatory">
       <Head>
         <title>Formula 1 Experience</title>
         <meta name="description" content="Immerse yourself in the thrilling world of Formula 1" />
@@ -114,61 +91,47 @@ export default function Home() {
       </video>
 
       {/* Page1 */}
-      <div
-        id="page1"
-        className="relative h-screen w-full flex items-center justify-center z-10 snap-center"
-      >
-        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center p-6 shadow-lg">
-          <h1 className="text-6xl text-gray-200 font-bold tracking-tight">FORMULA 1</h1>
+      <div id="page1" className="relative h-screen flex items-center justify-center z-10 snap-center">
+        <div className="text-center">
+          <h1 className="text-6xl text-gray-200 font-bold">FORMULA 1</h1>
           <p className="text-2xl text-gray-300 mt-4">Welcome to my F1 website</p>
         </div>
       </div>
 
       {/* Page2 */}
-      <div
-        id="page2"
-        className="relative h-screen w-full flex items-center justify-center z-20 snap-center" >
-        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10">
-          <h1 className="text-5xl text-white font-extrabold mb-6 animate-fade-in">
-            Experience the Speed
-          </h1>
-          <p className="text-xl text-gray-200 mb-8 animate-fade-in delay-100">
-            Join the adrenaline-pumping world of Formula 1 with exclusive race updates, driver
-            insights, and more.
-          </p>
-          <div className="relative w-full h-100 sm:h-96 rounded-lg overflow-hidden mb-8 animate-fade-in delay-200">
+      <div id="page2" className="relative h-screen flex items-center justify-center z-20 snap-center">
+        <div className="text-center bg-black/50 p-6 shadow-lg">
+          <h1 className="text-5xl text-white font-extrabold">Experience the Speed</h1>
+          <p className="text-xl text-gray-200">Join the adrenaline-pumping world of Formula 1.</p>
+          <div className="relative w-full h-96 overflow-hidden">
             <img
-              src="/img/ferrarif1.png" 
+              src="/img/ferrarif1.png"
               alt="Formula 1 Car"
-              className="w-full h-full object-cover transition-transform duration-500 hover:scale-95"/>
-            
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-95"
+            />
             {/* Sparkle effect */}
             <div className="sparkles-container">
-              {[...Array(10)].map((_, i) => (
+              {sparkleStyles.map((spark, i) => (
                 <div
                   key={i}
                   className="sparkle"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 0.5}s`,
-                    ["--x-offset" as any]: `${(Math.random() - 0.5) * 100}px`,
-                  } as React.CSSProperties & Record<string, any>}
+                    left: spark.left,
+                    animationDelay: spark.animationDelay,
+                    ["--x-offset" as any]: spark.xOffset,
+                  }}
                 />
               ))}
             </div>
           </div>
-          
         </div>
       </div>
 
       {/* Page3 */}
-      <div
-        id="page3"
-        className="relative h-screen w-full flex items-center justify-center z-10 snap-center"
-      >
-        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10 my-10">
+      <div id="page3" className="relative h-screen flex items-center justify-center z-10 snap-center">
+        <div className="text-center bg-black/50 p-6 shadow-lg">
           <h1 className="text-4xl text-white font-bold">F1 Highlights</h1>
-          <p className="text-xl text-gray-300 mt-4">Catch the latest race moments</p>
+          <p className="text-xl text-gray-300">Catch the latest race moments.</p>
         </div>
       </div>
     </div>
