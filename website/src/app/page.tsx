@@ -99,8 +99,8 @@ export default function Home() {
       </div>
 
       {/* Page2 */}
-      <div id="page2" className="relative h-screen flex items-center justify-center z-20 snap-center">
-        <div className="text-center bg-black/50 p-6 shadow-lg">
+      <div id="page2" className="relative h-screen flex items-center justify-center z-20 snap-center ">
+        <div className="text-center bg-black/50 py-6 shadow-lg rounded-2xl w-screen ">
           <h1 className="text-5xl text-white font-extrabold">Experience the Speed</h1>
           <p className="text-xl text-gray-200">Join the adrenaline-pumping world of Formula 1.</p>
           <div className="relative w-full h-96 overflow-hidden">
@@ -128,11 +128,11 @@ export default function Home() {
       </div>
 
       {/* Page3 */}
-      <div id="page3" className="relative h-screen flex items-center justify-center z-10 snap-center">
-        <div className="text-center bg-black/50 p-6 shadow-lg">
-          <h1 className="text-4xl text-white font-bold">F1 Highlights</h1>
-          <p className="text-xl text-gray-300">Catch the latest race moments.</p>
-        </div>
+      <div id="page3" className="relative h-screen w-full flex items-center justify-center z-10 snap-center" > 
+        <div className="max-w-9xl w-full h-full flex flex-col items-center justify-center text-center bg-black/50 p-6 shadow-lg m-10 my-10"> 
+          <h1 className="text-4xl text-white font-bold">F1 Highlights</h1> 
+          <p className="text-xl text-gray-300 mt-4">Catch the latest race moments</p> 
+        </div> 
       </div>
     </div>
   );
