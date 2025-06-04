@@ -34,11 +34,11 @@ export default function Home() {
         const sectionTop = (section as HTMLElement).offsetTop;
 
         if (delta > 0 && sectionTop > currentScroll + window.innerHeight / 2) {
-          if (!targetSection || sectionTop < targetSection.offsetTop) {
+          if (!targetSection || sectionTop < (targetSection as HTMLElement).offsetTop) {
             targetSection = section as HTMLElement;
           }
         } else if (delta < 0 && sectionTop < currentScroll) {
-          if (!targetSection || sectionTop > targetSection.offsetTop) {
+          if (!targetSection || sectionTop > (targetSection as HTMLElement).offsetTop) {
             targetSection = section as HTMLElement;
           }
         }
@@ -46,7 +46,7 @@ export default function Home() {
 
       if (targetSection) {
         window.scrollTo({
-          top: targetSection.offsetTop,
+          top: (targetSection as HTMLElement).offsetTop,
           behavior: "smooth",
         });
       }
