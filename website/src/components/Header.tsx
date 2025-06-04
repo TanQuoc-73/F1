@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import ScheduleDropdown from "./nav/ScheduleDropdown";
+
 
 export default function Header() {
   const pathname = usePathname();
@@ -12,7 +14,7 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const newOpacity = Math.max(1 - scrollY / 100, 0.01);
+      const newOpacity = Math.max(1 - scrollY / 1, 0.01);
       setOpacity(newOpacity);
     };
     window.addEventListener("scroll", handleScroll);
@@ -50,7 +52,7 @@ export default function Header() {
 
   return (
     <header
-      className="w-full bg-black shadow-md rounded-b-lg px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
+      className="w-full h-20 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
       style={{ opacity }}
     >
       {/* LOGO */}
@@ -61,21 +63,23 @@ export default function Header() {
       <nav className="flex gap-6 ml-auto mr-10">
         {[
           { href: "/new", label: "News" },
-          { href: "/schedule", label: "Schedule" },
+          { href: "/schedule", label: "Schedule", hasDropdown: true },
           { href: "/result", label: "Result" },
           { href: "/team", label: "Teams" },
           { href: "/driver", label: "Drivers" },
         ].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`relative text-gray-400 hover:text-red-600 transition-colors font-medium text-lg ${
-              pathname === item.href ? "text-red-600 sparkles" : ""
-            }`}
-          >
-            {item.label}
-            {pathname === item.href && <div className="sparkles-container">{generateSparks()}</div>}
-          </Link>
+          <div key={item.href} className="relative group">
+            <Link
+              href={item.href}
+              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg ${
+                pathname === item.href ? "text-red-600 sparkles" : ""
+              }`}
+            >
+              {item.label}
+              {pathname === item.href && <div className="sparkles-container">{generateSparks()}</div>}
+            </Link>
+            {item.hasDropdown && <ScheduleDropdown />}
+          </div>
         ))}
       </nav>
       {/* Login */}
