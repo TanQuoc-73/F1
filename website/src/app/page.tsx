@@ -1,18 +1,24 @@
-import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Head from "next/head";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)]">
-      {/* Header */}
-      <Header />
+    <div className="relative flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)]">
+      
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover z-0">
+      
+        <source src="/vid/demo.mp4" type="video/mp4" />
+      </video>
+      {/* Overlay cho phan content noi bat hon */}
+      <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10"></div>
+
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-8 sm:p-20 gap-16">
-        {/* Nội dung chính ở đây */}
-      </main>
-      {/* Footer*/}
-      <Footer />
+      
     </div>
   );
 }
