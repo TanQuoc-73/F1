@@ -3,10 +3,10 @@ package congngheweb.f1.formula1.controller;
 import congngheweb.f1.formula1.model.Season;
 import congngheweb.f1.formula1.service.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/seasons")
@@ -17,22 +17,25 @@ public class SeasonController {
     private SeasonService seasonService;
 
     @GetMapping
-    public List<Season> getAllSeasons() {
+    public List<Season> getAll() {
         return seasonService.getAllSeasons();
     }
 
     @GetMapping("/{id}")
-    public Optional<Season> getSeasonById(@PathVariable Long id) {
-        return seasonService.getSeasonById(id);
+    public ResponseEntity<Season> getById(@PathVariable Long id) {
+        return seasonService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Season createSeason(@RequestBody Season season) {
-        return seasonService.createSeason(season);
+    public Season create(@RequestBody Season season) {
+        return seasonService.create(season);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteSeason(@PathVariable Long id) {
-        seasonService.deleteSeason(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        seasonService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

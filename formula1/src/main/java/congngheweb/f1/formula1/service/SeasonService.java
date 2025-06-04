@@ -14,37 +14,19 @@ public class SeasonService {
     @Autowired
     private SeasonRepository seasonRepository;
 
-    // Lấy tất cả seasons
     public List<Season> getAllSeasons() {
         return seasonRepository.findAll();
     }
 
-    // Lấy season theo ID
     public Optional<Season> getById(Long id) {
         return seasonRepository.findById(id);
     }
 
-    // Thêm mới season
-    public Season createSeason(Season season) {
+    public Season create(Season season) {
         return seasonRepository.save(season);
     }
 
-    // Xoá season
-    public void deleteSeason(Long id) {
+    public void delete(Long id) {
         seasonRepository.deleteById(id);
-    }
-
-    // Có thể thêm cập nhật nếu cần
-    public Season updateSeason(Long id, Season seasonData) {
-        Optional<Season> optionalSeason = seasonRepository.findById(id);
-        if (optionalSeason.isPresent()) {
-            Season existing = optionalSeason.get();
-            existing.setYear(seasonData.getYear());
-            existing.setChampionDriver(seasonData.getChampionDriver());
-            existing.setChampionTeam(seasonData.getChampionTeam());
-            return seasonRepository.save(existing);
-        } else {
-            throw new RuntimeException("Season not found with ID: " + id);
-        }
     }
 }

@@ -10,7 +10,6 @@ public class Season {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private int year;
 
     @ManyToOne
@@ -20,14 +19,6 @@ public class Season {
     @ManyToOne
     @JoinColumn(name = "champion_team_id")
     private Team championTeam;
-
-    public Season() {}
-
-    public Season(int year, Driver championDriver, Team championTeam) {
-        this.year = year;
-        this.championDriver = championDriver;
-        this.championTeam = championTeam;
-    }
 
     // Getters and Setters
 
