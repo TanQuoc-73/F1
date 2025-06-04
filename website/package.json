@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/barlow": "^5.2.5",
     "@headlessui/react": "^2.2.4",
+    "@next/font": "^14.2.15",
     "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
