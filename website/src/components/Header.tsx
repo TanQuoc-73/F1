@@ -6,9 +6,11 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import ScheduleDropdown from "./nav/ScheduleDropdown";
 import ResultDropdown from "./nav/ResultDropdown";
+import AuthModal from "./AuthModal";
 
 
 export default function Header() {
+  const [authOpen, setAuthOpen] = useState(false);
   const pathname = usePathname();
   const [opacity, setOpacity] = useState(1);
 
@@ -85,12 +87,14 @@ export default function Header() {
         ))}
       </nav>
       {/* Login */}
-      <Link
-        href="/login"
-        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors font-semibold shadow"
-      >
-        SIGN IN
-      </Link>
+      <button
+  onClick={() => setAuthOpen(true)}
+  className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors font-semibold shadow"
+>
+  SIGN IN
+</button>
+      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </header>
+    
   );
 }

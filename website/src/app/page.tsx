@@ -157,12 +157,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <a
-            href="#page3"
-            className="inline-block bg-red-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-red-700 transition-colors animate-fade-in delay-300"
-          >
-            Discover More
-          </a>
+          
         </div>
       </div>
 
