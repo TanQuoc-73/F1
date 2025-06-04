@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -8,8 +9,9 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+  const { setUsername } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState("");
+  const [username, setUsernameState] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -36,9 +38,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       if (res.ok) {
         setMessage(isLogin ? "Login successful!" : "Registration successful!");
         if (isLogin) {
-          localStorage.setItem("username", username);
+          setUsername(username); // sẽ tự lưu vào localStorage
           onClose();
-          window.location.reload(); // Tùy chọn: refresh sau khi login
         }
       } else {
         setMessage(data);
@@ -50,7 +51,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 bg-opacity-50 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center ">
       <div className="bg-black rounded-lg p-6 w-[400px] relative shadow-xl">
         <button onClick={onClose} className="absolute top-2 right-3 text-xl font-bold text-gray-500 hover:text-black">×</button>
         <h2 className="text-2xl font-semibold mb-4 text-center">
@@ -62,7 +63,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             placeholder="Username"
             className="border p-2 rounded"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsernameState(e.target.value)}
             required
           />
           {!isLogin && (
