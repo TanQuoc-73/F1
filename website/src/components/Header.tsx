@@ -118,7 +118,7 @@ export default function Header() {
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b"
                 >
-                  Đăng xuất
+                  Log out
                 </button>
               </div>
             )}
