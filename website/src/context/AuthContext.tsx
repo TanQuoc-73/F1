@@ -26,15 +26,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // Only access localStorage in browser environment
-    const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (storedToken) {
-      setToken(storedToken);
-      setIsAuthenticated(true);
-    }
+    setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+        setIsAuthenticated(true);
+      }
+    }
+  }, [isClient]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -54,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(null);
           setRole(null);
           setIsAuthenticated(false);
-          if (typeof window !== 'undefined') {
+          if (isClient) {
             localStorage.removeItem('token');
           }
         }
@@ -62,14 +68,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     fetchUserInfo();
-  }, [token]);
+  }, [token, isClient]);
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       const response = await axios.post('/users/login', { username, password });
       const { token: newToken, username: responseUsername, role: userRole } = response.data;
       
-      if (typeof window !== 'undefined') {
+      if (isClient) {
         localStorage.setItem('token', newToken);
       }
       
@@ -94,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setRole(null);
     setIsAuthenticated(false);
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       localStorage.removeItem('token');
     }
   };

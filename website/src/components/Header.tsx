@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ScheduleDropdown from "./nav/ScheduleDropdown";
 import ResultDropdown from "./nav/ResultDropdown";
 import AuthModal from "./AuthModal";
@@ -15,6 +15,8 @@ export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const [opacity, setOpacity] = useState(1);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +27,25 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isDropdownOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const sparkles = [
     { left: "10%", delay: "0.1s", xOffset: "-10px" },
@@ -92,13 +113,17 @@ export default function Header() {
       {isAuthenticated ? (
         <div className="relative">
           <button
+            ref={buttonRef}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-xl shadow hover:scale-105 transition"
           >
             {user?.username.charAt(0).toUpperCase()}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50">
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 mt-2 w-56 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50"
+            >
               <div className="px-4 py-3 text-gray-200 border-b border-gray-700 text-lg">{user?.username}</div>
               <Link href="/profile" className="block px-4 py-3 text-gray-200 hover:bg-gray-700 transition-colors text-lg">
                 Profile
