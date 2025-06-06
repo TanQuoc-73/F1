@@ -57,15 +57,15 @@ export default function Header() {
 
   return (
     <header
-      className="w-full h-20 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
+      className="w-full h-24 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
       style={{ opacity }}
     >
       {/* LOGO */}
       <Link href="/" className="flex items-center">
-        <Image src="/img/logo.png" alt="Logo" width={100} height={100} className="rounded-full" />
+        <Image src="/img/logo.png" alt="Logo" width={125} height={125} className="rounded-full" />
       </Link>
       {/* Navigation */}
-      <nav className="flex gap-6 ml-auto mr-10">
+      <nav className="flex gap-8 ml-auto mr-10">
         {[
           { href: "/new", label: "News" },
           { href: "/schedule", label: "Schedule", hasDropdown: true },
@@ -76,7 +76,7 @@ export default function Header() {
           <div key={item.href} className="relative group">
             <Link
               href={item.href}
-              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-s ${
+              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg ${
                 pathname === item.href ? "text-red-600 sparkles" : ""
               }`}
             >
@@ -93,27 +93,27 @@ export default function Header() {
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-lg shadow hover:scale-105 transition"
+            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-xl shadow hover:scale-105 transition"
           >
             {user?.username.charAt(0).toUpperCase()}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50">
-              <div className="px-4 py-2 text-gray-200 border-b border-gray-700">{user?.username}</div>
-              <Link href="/profile" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
+            <div className="absolute right-0 mt-2 w-56 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50">
+              <div className="px-4 py-3 text-gray-200 border-b border-gray-700 text-lg">{user?.username}</div>
+              <Link href="/profile" className="block px-4 py-3 text-gray-200 hover:bg-gray-700 transition-colors text-lg">
                 Profile
               </Link>
-              <Link href="/settings" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
+              <Link href="/settings" className="block px-4 py-3 text-gray-200 hover:bg-gray-700 transition-colors text-lg">
                 Settings
               </Link>
               {role === "admin" && (
-                <Link href="/admin" className="block px-4 py-2 text-blue-400 hover:bg-blue-700 hover:text-white transition-colors">
+                <Link href="/admin" className="block px-4 py-3 text-blue-400 hover:bg-blue-700 hover:text-white transition-colors text-lg">
                   Admin Panel
                 </Link>
               )}
               <button
                 onClick={logout}
-                className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b"
+                className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b text-lg"
               >
                 Log out
               </button>
@@ -123,7 +123,7 @@ export default function Header() {
       ) : (
         <button
           onClick={() => setAuthOpen(true)}
-          className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors font-semibold shadow"
+          className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors font-semibold shadow text-lg"
         >
           SIGN IN
         </button>

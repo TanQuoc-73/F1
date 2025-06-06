@@ -1,8 +1,14 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+// `use client` component phải import bằng dynamic nếu dùng từ server component
+const TeamList = dynamic(() => import("@/components/TeamList"), { ssr: false });
+
 export default function TeamPage() {
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-black">
-        <h1 className="text-4xl font-bold mb-4">Team Page</h1>
-        <p className="text-lg text-gray-700">This is a team page in the application.</p>
-        </div>
-    );
+  return (
+    <div className="min-h-screen p-4 mt-12">
+      <TeamList />
+    </div>
+  );
 }
