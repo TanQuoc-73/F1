@@ -3,18 +3,21 @@ package congngheweb.f1.formula1.controller;
 import congngheweb.f1.formula1.model.User;
 import congngheweb.f1.formula1.service.UserService;
 import congngheweb.f1.formula1.security.JwtUtil;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -23,83 +26,93 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Đăng ký
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        if (userService.getUserByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+    public ResponseEntity<?> register(@RequestBody Map<String, String> registerData) {
+        String username = registerData.get("username");
+        String password = registerData.get("password");
+        String email = registerData.get("email");
+        String role = registerData.get("role");
+
+        if (username == null || password == null || email == null) {
+            return ResponseEntity.badRequest().body("Username, password and email are required");
         }
+
+        if (userService.getUserByUsername(username).isPresent()) {
+            return ResponseEntity.badRequest().body("Username already exists");
+        }
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPasswordHash(password); // Will be encoded in service
+        user.setEmail(email);
+        if (role != null) {
+            user.setRole(User.Role.valueOf(role.toUpperCase()));
+        }
+
         User newUser = userService.createUser(user);
         return ResponseEntity.ok(newUser);
     }
 
-    // Đăng nhập
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData, HttpServletResponse response) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginData.get("username"),
+                    loginData.get("password")
+                )
+            );
 
-        if (userService.authenticateUser(username, password)) {
-            User user = userService.getUserByUsername(username).get();
-            String role = user.getRole().name();
-            String token = jwtUtil.generateToken(username, role);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = userService.getUserByUsername(loginData.get("username")).get();
+            String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
 
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60); // 1 day
-            // cookie.setSecure(true); // Bật khi dùng HTTPS
-            response.addCookie(cookie);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("username", user.getUsername());
+            response.put("role", user.getRole().name());
 
-            // Trả về thông tin user (không trả token)
-            return ResponseEntity.ok(Map.of("username", username, "role", role));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid username or password");
         }
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMe(HttpServletRequest request) {
-        String token = null;
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            User user = userService.getUserByUsername(username).orElse(null);
+            if (user != null) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("username", user.getUsername());
+                response.put("email", user.getEmail());
+                response.put("role", user.getRole().name());
+                return ResponseEntity.ok(response);
             }
         }
-        if (token != null && jwtUtil.validateJwtToken(token)) {
-            String username = jwtUtil.getUsernameFromToken(token);
-            String role = jwtUtil.getRoleFromToken(token);
-            return ResponseEntity.ok(Map.of("username", username, "role", role));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
-        }
+        return ResponseEntity.status(401).body("Not authenticated");
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-        return ResponseEntity.ok("Logged out");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 }

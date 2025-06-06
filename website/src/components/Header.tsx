@@ -7,10 +7,10 @@ import React, { useEffect, useState } from "react";
 import ScheduleDropdown from "./nav/ScheduleDropdown";
 import ResultDropdown from "./nav/ResultDropdown";
 import AuthModal from "./AuthModal";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthHook } from '../hooks/useAuth';
 
 export default function Header() {
-  const { username, setUsername, isAuthReady } = useAuth();
+  const { user, isAuthenticated, handleLogout } = useAuthHook();
   const [authOpen, setAuthOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
@@ -55,11 +55,6 @@ export default function Header() {
     ));
   };
 
-  const handleLogout = () => {
-    setUsername(null);
-    setIsDropdownOpen(false); // Đóng dropdown sau khi logout
-  };
-
   return (
     <header
       className="w-full h-20 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
@@ -94,46 +89,39 @@ export default function Header() {
         ))}
       </nav>
       {/* Login/User */}
-      {isAuthReady ? (
-        username ? (
-          <div className="relative">
-            {/* Avatar button */}
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-lg shadow hover:scale-105 transition"
-            >
-              {username.charAt(0).toUpperCase()}
-            </button>
-            {/* Dropdown on click */}
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50">
-                <div className="px-4 py-2 text-gray-200 border-b border-gray-700">{username}</div>
-                <Link href="/profile" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
-                  Profile
-                </Link>
-                <Link href="/settings" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
-                  Settings
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b"
-                >
-                  Log out
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
+      {isAuthenticated ? (
+        <div className="relative">
           <button
-            onClick={() => setAuthOpen(true)}
-            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors font-semibold shadow"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-lg shadow hover:scale-105 transition"
           >
-            SIGN IN
+            {user?.username.charAt(0).toUpperCase()}
           </button>
-        )
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-700 rounded-lg shadow-lg opacity-100 pointer-events-auto transition-opacity duration-200 z-50">
+              <div className="px-4 py-2 text-gray-200 border-b border-gray-700">{user?.username}</div>
+              <Link href="/profile" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
+                Profile
+              </Link>
+              <Link href="/settings" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
+                Settings
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b"
+              >
+                Log out
+              </button>
+            </div>
+          )}
+        </div>
       ) : (
-        // Loading skeleton hoặc để trống
-        <div className="w-10 h-10" />
+        <button
+          onClick={() => setAuthOpen(true)}
+          className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition-colors font-semibold shadow"
+        >
+          SIGN IN
+        </button>
       )}
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </header>
