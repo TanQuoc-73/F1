@@ -7,10 +7,10 @@ import React, { useEffect, useState } from "react";
 import ScheduleDropdown from "./nav/ScheduleDropdown";
 import ResultDropdown from "./nav/ResultDropdown";
 import AuthModal from "./AuthModal";
-import { useAuthHook } from '../hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Header() {
-  const { user, isAuthenticated, handleLogout } = useAuthHook();
+  const { user, isAuthenticated, logout, role } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
@@ -106,8 +106,13 @@ export default function Header() {
               <Link href="/settings" className="block px-4 py-2 text-gray-200 hover:bg-gray-700 transition-colors">
                 Settings
               </Link>
+              {role === "admin" && (
+                <Link href="/admin" className="block px-4 py-2 text-blue-400 hover:bg-blue-700 hover:text-white transition-colors">
+                  Admin Panel
+                </Link>
+              )}
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b"
               >
                 Log out
