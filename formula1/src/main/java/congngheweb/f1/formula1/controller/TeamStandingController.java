@@ -38,4 +38,13 @@ public class TeamStandingController {
         teamStandingService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<TeamStanding> update(@PathVariable Long id, @RequestBody TeamStanding teamStanding) {
+        try {
+            return ResponseEntity.ok(teamStandingService.update(id, teamStanding));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

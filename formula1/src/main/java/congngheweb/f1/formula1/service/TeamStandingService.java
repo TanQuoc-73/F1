@@ -29,4 +29,14 @@ public class TeamStandingService {
     public void delete(Long id) {
         teamStandingRepository.deleteById(id);
     }
+    public TeamStanding update(Long id, TeamStanding updated) {
+        return teamStandingRepository.findById(id).map(existing -> {
+            existing.setSeason(updated.getSeason());
+            existing.setTeam(updated.getTeam());
+            existing.setPoints(updated.getPoints());
+            existing.setPosition(updated.getPosition());
+            return teamStandingRepository.save(existing);
+        }).orElseThrow(() -> new RuntimeException("TeamStanding not found"));
+    }
+
 }

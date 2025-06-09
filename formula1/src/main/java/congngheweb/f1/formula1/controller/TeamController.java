@@ -44,7 +44,7 @@ public class TeamController {
                 team.setLogoUrl(updatedTeam.getLogoUrl());
                 team.setPrincipal(updatedTeam.getPrincipal());
                 team.setPowerUnit(updatedTeam.getPowerUnit());
-                return teamService.createTeam(team); // dùng save()
+                return teamService.createTeam(team); 
             })
             .orElseThrow(() -> new RuntimeException("Team not found with id: " + id));
     }

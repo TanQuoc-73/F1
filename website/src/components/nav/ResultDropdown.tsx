@@ -6,12 +6,29 @@ export default function ResultDropdown() {
       <ul className="py-2">
         <li>
           <Link
+            href="/result/team-standing"
+            className="block px-4 py-2 text-gray-200 hover:text-red-600 hover:bg-gray-800 transition-colors"
+          >
+            Team Standing
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/result/driver-standing"
             className="block px-4 py-2 text-gray-200 hover:text-red-600 hover:bg-gray-800 transition-colors"
           >
-            Standing
+            Driver Standing
           </Link>
         </li>
+        <li>
+          <Link
+            href="/result/race-results"
+            className="block px-4 py-2 text-gray-200 hover:text-red-600 hover:bg-gray-800 transition-colors"
+          >
+            Race Results
+          </Link>
+        </li>
+        
         
         <li>
           <Link
