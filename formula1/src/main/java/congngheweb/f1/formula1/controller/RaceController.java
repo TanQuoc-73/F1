@@ -21,6 +21,14 @@ public class RaceController {
         return raceService.getAllRaces();
     }
 
+    @GetMapping("/upcoming")
+    public List<Race> getUpcomingRaces(@RequestParam(required = false) Integer limit) {
+        if (limit != null) {
+            return raceService.getUpcomingRacesWithLimit(limit);
+        }
+        return raceService.getUpcomingRaces();
+    }
+
     @GetMapping("/{id}")
     public Optional<Race> getRaceById(@PathVariable Long id) {
         return raceService.getRaceById(id);

@@ -21,6 +21,15 @@ public class SeasonController {
         return seasonService.getAllSeasons();
     }
 
+    @GetMapping("/current")
+    public ResponseEntity<Season> getCurrentSeason() {
+        try {
+            return ResponseEntity.ok(seasonService.getCurrentSeason());
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Season> getById(@PathVariable Long id) {
         return seasonService.getById(id)

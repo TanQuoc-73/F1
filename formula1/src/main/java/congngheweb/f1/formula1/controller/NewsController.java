@@ -26,6 +26,11 @@ public class NewsController {
         return newsService.getAllNews();
     }
 
+    @GetMapping("/latest")
+    public List<News> getLatestNews(@RequestParam(defaultValue = "3") int limit) {
+        return newsService.getLatestNews(limit);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<News> getNewsById(@PathVariable Long id) {
         return newsService.getNewsById(id)

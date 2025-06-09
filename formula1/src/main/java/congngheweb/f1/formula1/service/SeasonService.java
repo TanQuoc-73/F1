@@ -29,4 +29,9 @@ public class SeasonService {
     public void delete(Long id) {
         seasonRepository.deleteById(id);
     }
+
+    public Season getCurrentSeason() {
+        return seasonRepository.findTopByOrderByYearDesc()
+                .orElseThrow(() -> new RuntimeException("No season found"));
+    }
 }

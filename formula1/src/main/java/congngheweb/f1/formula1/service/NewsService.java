@@ -29,4 +29,8 @@ public class NewsService {
     public void deleteNews(Long id) {
         newsRepository.deleteById(id);
     }
+
+    public List<News> getLatestNews(int limit) {
+        return newsRepository.findTopByOrderByPublishedAtDesc(limit);
+    }
 }

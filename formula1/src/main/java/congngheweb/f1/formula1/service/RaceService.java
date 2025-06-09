@@ -5,6 +5,7 @@ import congngheweb.f1.formula1.repository.RaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,5 +29,13 @@ public class RaceService {
 
     public void deleteRace(Long id) {
         raceRepository.deleteById(id);
+    }
+
+    public List<Race> getUpcomingRaces() {
+        return raceRepository.findUpcomingRaces(LocalDate.now());
+    }
+
+    public List<Race> getUpcomingRacesWithLimit(int limit) {
+        return raceRepository.findUpcomingRacesWithLimit(LocalDate.now(), limit);
     }
 }
