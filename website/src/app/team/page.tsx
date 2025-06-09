@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchDrivers } from "@/services/driverService";
+import TeamDetailModal from "@/components/TeamDetailModal";
 
 interface Team {
   id: number;
@@ -41,6 +42,7 @@ export default function TeamPage() {
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState<TeamStanding | null>(null);
 
   // Fetch all seasons and set default to latest
   useEffect(() => {
@@ -107,13 +109,14 @@ export default function TeamPage() {
       {selectedSeason && (
         <div className="text-center text-gray-400 mb-8">Season {selectedSeason.year}</div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {teamStandings.map((standing) => {
           const teamDrivers = drivers.filter(d => d.team.id === standing.team.id);
           return (
             <div
               key={standing.id}
-              className="relative bg-gray-800 rounded-2xl border border-gray-700 shadow-lg p-0 flex flex-col h-[400px] w-[250px] mx-auto overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+              onClick={() => setSelectedTeam(standing)}
+              className="relative bg-gray-800 rounded-2xl border border-gray-700 shadow-lg p-0 flex flex-col h-[500px] w-full mx-auto overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
             >
               <div className="flex justify-between items-start px-4 pt-3 pb-3 border-b border-gray-700">
                 <div className="text-3xl font-extrabold text-yellow-400" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
@@ -129,21 +132,52 @@ export default function TeamPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between px-4 pt-2 pb-2 border-b border-gray-700">
+              <div className="flex flex-col items-center px-4 pt-4 pb-2">
+                <div className="flex items-center justify-between gap-4 mb-4 w-full">
+                  {teamDrivers[0]?.imageUrl && (
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={teamDrivers[0].imageUrl} 
+                        alt={teamDrivers[0].lastName} 
+                        className="h-12 w-12 object-contain rounded-full border-2 border-gray-600" 
+                      />
+                      <div className="text-sm text-gray-300">
+                        {teamDrivers[0].firstName} <br />
+                        <span className="font-bold text-white">{teamDrivers[0].lastName}</span>
+                      </div>
+                    </div>
+                  )}
+                  {teamDrivers[1]?.imageUrl && (
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={teamDrivers[1].imageUrl} 
+                        alt={teamDrivers[1].lastName} 
+                        className="h-12 w-12 object-contain rounded-full border-2 border-gray-600" 
+                      />
+                      <div className="text-sm text-gray-300">
+                        {teamDrivers[1].firstName} <br />
+                        <span className="font-bold text-white">{teamDrivers[1].lastName}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-center">
                   <div className="w-1 h-4 bg-red-600 mr-2" />
                   <div className="text-lg font-extrabold uppercase tracking-wide text-yellow-400 leading-tight" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
                     {standing.team.name}
                   </div>
                 </div>
-                {standing.team.logoUrl && (
+              </div>
+
+              {standing.team.logoUrl && (
+                <div className="flex-none flex items-center justify-center h-48 px-4">
                   <img 
                     src={standing.team.logoUrl} 
                     alt={standing.team.name} 
-                    className="h-16 w-16 object-contain" 
+                    className="w-full h-full object-contain" 
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               {standing.team.carImageUrl && (
                 <div className="flex-none flex items-center justify-center h-20 px-4 mt-2">
@@ -155,42 +189,19 @@ export default function TeamPage() {
                 </div>
               )}
 
-              <div className="flex flex-col items-center px-4 pt-2 pb-2 flex-grow mt-auto">
-                {teamDrivers[0] && (
-                  <div className="flex items-center mb-2">
-                    {teamDrivers[0].imageUrl && (
-                      <img 
-                        src={teamDrivers[0].imageUrl} 
-                        alt={teamDrivers[0].lastName} 
-                        className="h-12 w-12 object-contain mr-2 rounded-full" 
-                      />
-                    )}
-                    <span className="text-sm text-gray-300 leading-tight">
-                      {teamDrivers[0].firstName} <br />
-                      <span className="font-bold text-white">{teamDrivers[0].lastName}</span>
-                    </span>
-                  </div>
-                )}
-                {teamDrivers[1] && (
-                  <div className="flex items-center">
-                    {teamDrivers[1].imageUrl && (
-                      <img 
-                        src={teamDrivers[1].imageUrl} 
-                        alt={teamDrivers[1].lastName} 
-                        className="h-12 w-12 object-contain mr-2 rounded-full" 
-                      />
-                    )}
-                    <span className="text-sm text-gray-300 leading-tight">
-                      {teamDrivers[1].firstName} <br />
-                      <span className="font-bold text-white">{teamDrivers[1].lastName}</span>
-                    </span>
-                  </div>
-                )}
+              <div className="flex flex-col items-center px-4 pt-2 pb-4 flex-grow mt-auto">
               </div>
             </div>
           );
         })}
       </div>
+
+      <TeamDetailModal
+        isOpen={selectedTeam !== null}
+        onClose={() => setSelectedTeam(null)}
+        teamStanding={selectedTeam}
+        drivers={drivers}
+      />
     </div>
   );
 }
