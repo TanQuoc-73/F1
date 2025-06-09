@@ -11,7 +11,9 @@ interface AdminSection {
 
 const sections: AdminSection[] = [
   { title: "Team Management", description: "Manage F1 teams", href: "/admin/teams" },
-  { title: "Schedule Management", description: "Manage race schedules", href: "/admin/schedules" },
+  // { title: "Schedule Management", description: "Manage race schedules", href: "/admin/schedules" },
+  { title: "Race Management", description: "Manage race", href: "/admin/races" },
+  { title: "Circuit Management", description: "Manage circuit", href: "/admin/circuit" },
   { title: "Driver Management", description: "Manage drivers", href: "/admin/drivers" },
   { title: "User Management", description: "Manage users and roles", href: "/admin/users" },
   { title: "News Management", description: "Publish and edit news", href: "/admin/news" },
