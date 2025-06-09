@@ -1,45 +1,45 @@
 "use client";
 
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
-import Link from "next/link";
-
-interface AdminSection {
-  title: string;
-  description: string;
-  href: string;
-}
-
-const sections: AdminSection[] = [
-  { title: "Team Management", description: "Manage F1 teams", href: "/admin/teams" },
-  { title: "Team Standing Management", description: "Manage F1 teams standing", href: "/admin/team-standings" },
-  { title: "Driver Standing Management", description: "Manage F1 drivers standing", href: "/admin/driver-standings" },
-  // { title: "Schedule Management", description: "Manage race schedules", href: "/admin/schedules" },
-  { title: "Race Management", description: "Manage race", href: "/admin/races" },
-  { title: "Circuit Management", description: "Manage circuit", href: "/admin/circuit" },
-  { title: "Driver Management", description: "Manage drivers", href: "/admin/drivers" },
-  { title: "User Management", description: "Manage users and roles", href: "/admin/users" },
-  { title: "News Management", description: "Publish and edit news", href: "/admin/news" },
-  { title: "Settings", description: "Configure system preferences", href: "/admin/settings" },
-];
 
 export default function AdminPage() {
   return (
-    <ProtectedAdminRoute>
-      <div className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold text-white mb-8 text-center">Admin Dashboard</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.map((section) => (
-            <Link
-              key={section.title}
-              href={section.href}
-              className="block bg-[#1a1a1a] border border-gray-700 hover:border-red-500 hover:shadow-red-500/20 text-white p-6 rounded-xl shadow-md transition"
-            >
-              <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
-              <p className="text-gray-400">{section.description}</p>
-            </Link>
-          ))}
+    <div className="space-y-6">
+      <div className="bg-gray-800 rounded-xl p-6">
+        <h1 className="text-3xl font-bold text-white mb-4">Welcome to Admin Dashboard</h1>
+        <p className="text-gray-300">
+          Use the sidebar to navigate between different management sections. You can manage teams, drivers, races, and more.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gray-800 rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-2">Quick Stats</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Total Teams</span>
+              <span className="text-white font-semibold">10</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Total Drivers</span>
+              <span className="text-white font-semibold">20</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-300">Total Races</span>
+              <span className="text-white font-semibold">24</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-2">Recent Activity</h2>
+          <div className="space-y-4">
+            <div className="text-gray-300">
+              No recent activity to display
+            </div>
+          </div>
         </div>
       </div>
-    </ProtectedAdminRoute>
+    </div>
   );
 }
