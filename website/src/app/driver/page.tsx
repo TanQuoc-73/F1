@@ -103,37 +103,40 @@ export default function DriverPage() {
             {top3.map((s, idx) => (
               <div
                 key={s.id}
-                className={`relative bg-white text-black rounded-2xl shadow-lg flex flex-col items-center p-6 border-4 ${
+                className={`relative group rounded-2xl flex flex-col items-stretch p-0 overflow-visible border-4 transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_40px_0_rgba(255,255,255,0.15)] ${
                   idx === 0 ? "border-yellow-400" : idx === 1 ? "border-gray-400" : "border-orange-400"
-                }`}
-                style={{ minHeight: 420 }}
+                } bg-black/70 w-full`}
+                style={{ minHeight: 480, minWidth: 300, maxWidth: 420, margin: '0 auto' }}
               >
-                <div className="absolute top-4 left-4 text-4xl font-bold opacity-30 select-none">
-                  {s.position}
+                {/* Top row: position & points */}
+                <div className="flex justify-between items-start px-6 pt-4">
+                  <div className="text-3xl font-extrabold text-white/90" style={{fontFamily:'F1Bold,Arial,sans-serif'}}>{s.position}</div>
+                  <div className="flex flex-col items-end">
+                    <div className="text-2xl font-black text-white leading-none">{s.points}</div>
+                    <div className="text-xs font-black bg-black text-white px-2 py-0.5 rounded mt-1 tracking-widest">PTS</div>
+                  </div>
                 </div>
-                <div className="absolute top-4 right-4 text-right">
-                  <div className="text-2xl font-bold">{s.points}</div>
-                  <div className="text-xs font-black bg-black text-white px-2 py-1 rounded">PTS</div>
+                {/* Name, flag, team */}
+                <div className="px-6 mt-2 mb-2 border-b border-gray-700 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-orange-400 font-bold uppercase tracking-widest">{s.driver.firstName}</span>
+                    {s.driver.nationality && (
+                      <img src={`https://flagcdn.com/24x18/${getCountryCode(s.driver.nationality)}.png`} alt={s.driver.nationality} className="h-4 w-6 object-cover rounded-sm ml-1" />
+                    )}
+                  </div>
+                  <div className="text-2xl font-extrabold uppercase tracking-wide text-white leading-tight" style={{fontFamily:'F1Bold,Arial,sans-serif'}}>{s.driver.lastName}</div>
+                  <div className="text-sm text-gray-400 mt-1">{s.driver.team.name}</div>
                 </div>
-                <div className="flex flex-col items-center mt-8">
+                {/* Driver image lớn, sát đáy thẻ */}
+                <div className="flex-1 flex items-end justify-center relative min-h-[300px]">
                   <img
                     src={s.driver.imageUrl}
                     alt={s.driver.firstName}
-                    className="w-36 h-36 object-contain mb-4"
-                    style={{ background: "#f3f3f3", borderRadius: 16 }}
+                    className="w-[240px] h-[300px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: "transparent" }}
                   />
-                  <div className="text-lg font-bold uppercase tracking-wide">
-                    {s.driver.firstName}
-                  </div>
-                  <div className="text-2xl font-extrabold uppercase mb-2" style={{ letterSpacing: 1 }}>
-                    {s.driver.lastName}
-                  </div>
-                  <div className="text-gray-500 mb-2">{s.driver.team.name}</div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <img src={s.driver.team.logoUrl} alt={s.driver.team.name} className="h-6 w-6" />
-                    <span className="text-xs text-gray-700">{s.driver.nationality}</span>
-                  </div>
-                  <div className="absolute left-1/2 transform -translate-x-1/2 bottom-4 text-5xl font-extrabold opacity-20 select-none" style={{ color: idx === 0 ? '#ff9800' : idx === 1 ? '#ffb300' : '#e53935' }}>
+                  {/* Số áo lớn góc dưới trái, overlay lên ảnh */}
+                  <div className="absolute left-6 bottom-4 text-7xl font-extrabold select-none" style={{ color: idx === 0 ? '#ff9800' : idx === 1 ? '#bdbdbd' : '#e53935', fontFamily:'F1Bold,Arial,sans-serif', opacity:0.95 }}>
                     {s.driver.number}
                   </div>
                 </div>
@@ -141,24 +144,45 @@ export default function DriverPage() {
             ))}
           </div>
           {/* Rest of Drivers */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {rest.map((s) => (
               <div
                 key={s.id}
-                className="bg-gray-900 p-4 rounded-lg shadow text-center flex flex-col items-center"
+                className="relative group flex flex-col items-stretch p-0 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_30px_0_rgba(255,255,255,0.10)] bg-black/60 w-full"
+                style={{ minHeight: 380, minWidth: 220, maxWidth: 320, margin: '0 auto' }}
               >
-                <img
-                  src={s.driver.imageUrl}
-                  alt={s.driver.firstName}
-                  className="w-20 h-20 object-contain mb-3 rounded-full border border-gray-700"
-                  style={{ background: "#f3f3f3" }}
-                />
-                <div className="text-lg font-semibold">
-                  {s.driver.firstName} {s.driver.lastName}
+                {/* Top: position & points */}
+                <div className="flex justify-between items-start px-5 pt-3">
+                  <div className="text-xl font-extrabold text-white/80">{s.position}</div>
+                  <div className="flex flex-col items-end">
+                    <div className="text-lg font-black text-white leading-none">{s.points}</div>
+                    <div className="text-xs font-black bg-black text-white px-2 py-0.5 rounded mt-1 tracking-widest">PTS</div>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-400">{s.driver.nationality}</div>
-                <div className="text-sm text-gray-500 italic mt-1">Team: {s.driver.team.name}</div>
-                <div className="text-xs text-gray-400 mt-1">#{s.driver.number} • {s.points} pts</div>
+                {/* Name, flag, team */}
+                <div className="px-5 mt-1 mb-1 border-b border-gray-700 pb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-orange-400 font-bold uppercase tracking-widest">{s.driver.firstName}</span>
+                    {s.driver.nationality && (
+                      <img src={`https://flagcdn.com/24x18/${getCountryCode(s.driver.nationality)}.png`} alt={s.driver.nationality} className="h-4 w-6 object-cover rounded-sm ml-1" />
+                    )}
+                  </div>
+                  <div className="text-xl font-extrabold uppercase tracking-wide text-white leading-tight">{s.driver.lastName}</div>
+                  <div className="text-xs text-gray-400 mt-1">{s.driver.team.name}</div>
+                </div>
+                {/* Driver image lớn hơn */}
+                <div className="flex-1 flex items-end justify-center relative min-h-[180px]">
+                  <img
+                    src={s.driver.imageUrl}
+                    alt={s.driver.firstName}
+                    className="w-[140px] h-[180px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: "transparent" }}
+                  />
+                  {/* Số áo lớn góc dưới */}
+                  <div className="absolute left-5 bottom-4 text-5xl font-extrabold select-none" style={{ color: '#ff9800', fontFamily:'F1Bold,Arial,sans-serif', opacity:0.9 }}>
+                    {s.driver.number}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -166,4 +190,28 @@ export default function DriverPage() {
       )}
     </div>
   );
+}
+
+// Helper function for country code
+function getCountryCode(nationality: string): string {
+  // Map quốc tịch sang mã quốc gia (ví dụ: "Australia" => "au")
+  const map: Record<string, string> = {
+    Australia: "au",
+    "United Kingdom": "gb",
+    Netherlands: "nl",
+    Monaco: "mc",
+    Italy: "it",
+    France: "fr",
+    Spain: "es",
+    Germany: "de",
+    Finland: "fi",
+    Mexico: "mx",
+    Canada: "ca",
+    Japan: "jp",
+    China: "cn",
+    Brazil: "br",
+    USA: "us",
+    // ... thêm nếu cần
+  };
+  return map[nationality] || "us";
 }
