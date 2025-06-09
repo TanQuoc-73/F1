@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import axios from "../config/axios";
 
@@ -156,11 +155,10 @@ export default function Home() {
               {news.map((item) => (
                 <div key={item.id} className="bg-gray-900 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform">
                   <div className="relative h-48">
-                    <Image
+                    <img
                       src={item.imageUrl || '/img/default-news.jpg'}
                       alt={item.title}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-6">
@@ -186,11 +184,10 @@ export default function Home() {
               {upcomingRaces.map((race) => (
                 <div key={race.id} className="bg-black rounded-lg overflow-hidden hover:transform hover:scale-105 transition-transform">
                   <div className="relative h-48">
-                    <Image
+                    <img
                       src={race.circuit.imageUrl || '/img/default-circuit.jpg'}
                       alt={race.raceName}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-6">
