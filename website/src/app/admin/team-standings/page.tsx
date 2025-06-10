@@ -46,6 +46,7 @@ const TeamStandingAdminPage: React.FC = () => {
   const [raceResults, setRaceResults] = useState<RaceResult[]>([]);
   const [filterSeasonId, setFilterSeasonId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -143,13 +144,12 @@ const TeamStandingAdminPage: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this standing?")) return;
-    
     try {
       await fetch(`http://localhost:8080/team-standings/${id}`, {
         method: "DELETE"
       });
       setStandings(standings.filter(s => s.id !== id));
+      setDeleteConfirmId(null);
     } catch (error) {
       console.error("Error deleting standing:", error);
     }
@@ -199,15 +199,15 @@ const TeamStandingAdminPage: React.FC = () => {
                 .filter(s => !filterSeasonId || s.season.id.toString() === filterSeasonId)
                 .sort((a, b) => b.points - a.points)
                 .map((s, index) => (
-                  <tr key={s.id} className="border-t border-gray-700 hover:bg-gray-700">
+                  <tr key={s.id} className="border-t border-gray-700 hover:bg-gray-700 group">
                     <td className="p-4">{index + 1}</td>
                     <td className="p-4">{s.team.name}</td>
                     <td className="p-4">{s.points}</td>
                     <td className="p-4">{s.season.year}</td>
                     <td className="p-4">
                       <button
-                        onClick={() => handleDelete(s.id)}
-                        className="text-red-400 hover:text-red-600"
+                        onClick={() => setDeleteConfirmId(s.id)}
+                        className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         Delete
                       </button>
@@ -217,6 +217,32 @@ const TeamStandingAdminPage: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
+              <p className="text-gray-300 mb-6">
+                Are you sure you want to delete this standing? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteConfirmId)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
