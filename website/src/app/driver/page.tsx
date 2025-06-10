@@ -74,7 +74,7 @@ export default function DriverPage() {
   const rest = standings.slice(3);
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-6">
       <h1 className="text-4xl font-bold text-center mb-8">F1 Drivers</h1>
       {/* Season Filter */}
       <div className="flex justify-center mb-8">
@@ -105,7 +105,7 @@ export default function DriverPage() {
                 key={s.id}
                 className={`relative group rounded-2xl flex flex-col items-stretch p-0 overflow-visible border-4 transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_40px_0_rgba(255,255,255,0.15)] ${
                   idx === 0 ? "border-yellow-400" : idx === 1 ? "border-gray-400" : "border-orange-400"
-                } bg-black/70 w-full`}
+                } bg-gray-800 w-full`}
                 style={{ minHeight: 480, minWidth: 300, maxWidth: 420, margin: '0 auto' }}
               >
                 {/* Top row: position & points */}
@@ -148,7 +148,7 @@ export default function DriverPage() {
             {rest.map((s) => (
               <div
                 key={s.id}
-                className="relative group flex flex-col items-stretch p-0 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_30px_0_rgba(255,255,255,0.10)] bg-black/60 w-full"
+                className="relative group flex flex-col items-stretch p-0 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_30px_0_rgba(255,255,255,0.10)] bg-gray-800 w-full"
                 style={{ minHeight: 380, minWidth: 220, maxWidth: 320, margin: '0 auto' }}
               >
                 {/* Top: position & points */}
