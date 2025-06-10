@@ -66,7 +66,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gray-800 text-white">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Dashboard Overview</h1>
 

@@ -42,7 +42,7 @@ export default function CircuitsPage() {
   if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
-    <div className="p-4 bg-black min-h-screen text-white">
+    <div className="p-4 bg-gray-900 min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-6">F1 Circuits</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {circuits.map((circuit) => (

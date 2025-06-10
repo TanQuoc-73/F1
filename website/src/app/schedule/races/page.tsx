@@ -117,6 +117,13 @@ export default function RacePage() {
     ? raceResults.filter(result => result.race.id === selectedRace.id)
     : [];
 
+  // Check if a race is upcoming
+  const isUpcomingRace = (race: Race) => {
+    const raceDate = new Date(race.raceDate);
+    const today = new Date();
+    return raceDate > today;
+  };
+
   if (loading) return <div className="text-center mt-4 text-white">Loading races...</div>;
   if (error) return <div className="text-center mt-4 text-red-600">{error}</div>;
 
@@ -145,48 +152,62 @@ export default function RacePage() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-        {filteredRaces.map((race) => (
-          <div
-            key={race.id}
-            onClick={() => setSelectedRace(race)}
-            className="bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-300"
-          >
-            {/* Circuit Image */}
-            {race.circuit.imageUrl && (
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={race.circuit.imageUrl} 
-                  alt={race.circuit.name} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+        {filteredRaces.map((race) => {
+          const upcoming = isUpcomingRace(race);
+          return (
+            <div
+              key={race.id}
+              onClick={() => setSelectedRace(race)}
+              className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+                upcoming 
+                  ? 'hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 border-2 border-red-500/50' 
+                  : 'hover:scale-105'
+              }`}
+            >
+              {/* Circuit Image */}
+              {race.circuit.imageUrl && (
+                <div className="h-48 overflow-hidden relative">
+                  <img 
+                    src={race.circuit.imageUrl} 
+                    alt={race.circuit.name} 
+                    className="w-full h-full object-cover"
+                  />
+                  {upcoming && (
+                    <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
+                      Upcoming
+                    </div>
+                  )}
+                </div>
+              )}
 
-            {/* Race Info */}
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-yellow-400">{race.raceName}</h2>
-                <span className="text-gray-400">Round {race.roundNumber}</span>
-              </div>
-              
-              <div className="space-y-2">
-                <p className="text-gray-400">
-                  {new Date(race.raceDate).toLocaleDateString()}
-                </p>
-                <p className="text-gray-400">
-                  {race.circuit.name}
-                </p>
-                <p className="text-gray-400">
-                  {race.circuit.location}, {race.circuit.country}
-                </p>
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>Length: {race.circuit.lengthKm} km</span>
-                  <span>Laps: {race.circuit.laps}</span>
+              {/* Race Info */}
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className={`text-xl font-bold ${upcoming ? 'text-red-400' : 'text-blue-400'}`}>
+                    {race.raceName}
+                  </h2>
+                  <span className="text-gray-400">Round {race.roundNumber}</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className={`${upcoming ? 'text-red-400' : 'text-gray-400'}`}>
+                    {new Date(race.raceDate).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-400">
+                    {race.circuit.name}
+                  </p>
+                  <p className="text-gray-400">
+                    {race.circuit.location}, {race.circuit.country}
+                  </p>
+                  <div className="flex justify-between text-sm text-gray-400">
+                    <span>Length: {race.circuit.lengthKm} km</span>
+                    <span>Laps: {race.circuit.laps}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <RaceResultModal

@@ -69,7 +69,7 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gray-800 text-white">
       {/* Header */}
       <header className="relative h-[40vh] bg-red-600">
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80 z-10" />

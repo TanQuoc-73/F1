@@ -59,7 +59,7 @@ export default function SeasonsPage() {
   if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
-    <div className="p-4 bg-black min-h-screen text-white">
+    <div className="p-4 bg-gray-800 min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-6">F1 Seasons</h1>
       <ul className="space-y-6">
         {seasons.map((season) => (

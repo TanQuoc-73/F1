@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DriverFormModal from "@/components/DriverFormModal";
 
 interface Team {
   id: number;
@@ -18,18 +19,21 @@ interface Driver {
   team: Team;
 }
 
+const initialFormState = {
+  firstName: "",
+  lastName: "",
+  nationality: "",
+  dateOfBirth: "",
+  imageUrl: "",
+  number: 0,
+  teamId: 0,
+};
+
 export default function DriversAdminPage() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    nationality: "",
-    dateOfBirth: "",
-    imageUrl: "",
-    number: 0,
-    teamId: 0,
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form, setForm] = useState(initialFormState);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -65,115 +69,51 @@ export default function DriversAdminPage() {
       }),
     });
 
-    setForm({
-      firstName: "",
-      lastName: "",
-      nationality: "",
-      dateOfBirth: "",
-      imageUrl: "",
-      number: 0,
-      teamId: 0,
-    });
+    setForm(initialFormState);
     setEditingId(null);
+    setIsModalOpen(false);
     fetchDrivers();
   };
 
   const handleEdit = (driver: Driver) => {
     setEditingId(driver.id!);
     setForm({
-      firstName: driver.firstName,
-      lastName: driver.lastName,
-      nationality: driver.nationality,
-      dateOfBirth: driver.dateOfBirth,
-      imageUrl: driver.imageUrl,
-      number: driver.number,
-      teamId: driver.team.id,
+      firstName: driver.firstName || "",
+      lastName: driver.lastName || "",
+      nationality: driver.nationality || "",
+      dateOfBirth: driver.dateOfBirth || "",
+      imageUrl: driver.imageUrl || "",
+      number: driver.number || 0,
+      teamId: driver.team?.id || 0,
     });
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this driver?")) return;
     await fetch(`http://localhost:8080/drivers/${id}`, {
       method: "DELETE",
     });
     fetchDrivers();
   };
 
+  const openModal = () => {
+    setEditingId(null);
+    setForm(initialFormState);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-6 bg-black text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Driver Management</h1>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-4 rounded mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="First Name"
-            value={form.firstName}
-            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={form.lastName}
-            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Nationality"
-            value={form.nationality}
-            onChange={(e) => setForm({ ...form, nationality: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="date"
-            value={form.dateOfBirth}
-            onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Number"
-            value={form.number}
-            onChange={(e) =>
-              setForm({ ...form, number: Number(e.target.value) })
-            }
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Image URL"
-            value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-            className="col-span-2 p-2 rounded bg-gray-700 text-white"
-          />
-          <select
-            value={form.teamId}
-            onChange={(e) => setForm({ ...form, teamId: Number(e.target.value) })}
-            className="col-span-2 p-2 rounded bg-gray-700 text-white"
-            required
-          >
-            <option value={0}>Select Team</option>
-            {teams.map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Driver Management</h1>
         <button
-          type="submit"
-          className="mt-4 bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
+          onClick={openModal}
+          className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
         >
-          {editingId ? "Update" : "Create"} Driver
+          Add New Driver
         </button>
-      </form>
+      </div>
 
       {/* List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,6 +149,16 @@ export default function DriversAdminPage() {
           </div>
         ))}
       </div>
+
+      <DriverFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        form={form}
+        setForm={setForm}
+        teams={teams}
+        editingId={editingId}
+      />
     </div>
   );
 }

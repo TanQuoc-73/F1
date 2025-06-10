@@ -101,7 +101,7 @@ export default function ResultPage() {
 
         const filteredTeamStandings = teamData
           .filter((standing: TeamStanding) => standing.season.id === selectedSeason.id)
-          .sort((a: TeamStanding, b: TeamStanding) => a.position - b.position)
+          .sort((a: TeamStanding, b: TeamStanding) => b.points - a.points)
           .slice(0, 3);
 
         const filteredRaceResults = raceData
@@ -188,9 +188,9 @@ export default function ResultPage() {
                 <div className="text-sm text-gray-400">Top 3</div>
               </div>
               <div className="space-y-6">
-                {teamStandings.map((standing) => (
+                {teamStandings.map((standing, index) => (
                   <div key={standing.id} className="flex items-center gap-4 bg-gray-700/50 p-3 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-400 w-8">{standing.position}</div>
+                    <div className="text-2xl font-bold text-yellow-400 w-8">{index + 1}</div>
                     {standing.team.logoUrl && (
                       <img
                         src={standing.team.logoUrl}

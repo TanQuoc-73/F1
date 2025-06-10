@@ -36,11 +36,13 @@ export default function DriverDetailModal({ isOpen, onClose, driver }: DriverDet
         <div className="relative h-48 bg-gradient-to-r from-gray-900 to-gray-800">
           <div className="absolute inset-0 bg-black opacity-20"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <img
-              src={driver.imageUrl}
-              alt={`${driver.firstName} ${driver.lastName}`}
-              className="h-64 object-contain"
-            />
+            {driver.imageUrl && driver.imageUrl.trim() !== "" && (
+              <img
+                src={driver.imageUrl}
+                alt={`${driver.firstName} ${driver.lastName}`}
+                className="h-64 object-contain"
+              />
+            )}
           </div>
           <button
             onClick={onClose}
@@ -83,7 +85,7 @@ export default function DriverDetailModal({ isOpen, onClose, driver }: DriverDet
           {/* Team Info */}
           <div className="bg-gray-700 rounded-xl p-4 mb-6">
             <div className="flex items-center gap-4">
-              {driver.team.logoUrl && (
+              {driver.team.logoUrl && driver.team.logoUrl.trim() !== "" && (
                 <img
                   src={driver.team.logoUrl}
                   alt={driver.team.name}

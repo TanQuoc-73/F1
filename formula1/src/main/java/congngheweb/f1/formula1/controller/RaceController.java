@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.controller;
 import congngheweb.f1.formula1.model.Race;
 import congngheweb.f1.formula1.service.RaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,16 @@ public class RaceController {
     @PostMapping
     public Race createRace(@RequestBody Race race) {
         return raceService.createRace(race);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Race> updateRace(@PathVariable Long id, @RequestBody Race race) {
+        try {
+            Race updatedRace = raceService.updateRace(id, race);
+            return ResponseEntity.ok(updatedRace);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -27,6 +27,19 @@ public class RaceService {
         return raceRepository.save(race);
     }
 
+    public Race updateRace(Long id, Race race) {
+        Race existingRace = raceRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Race not found"));
+        
+        existingRace.setRaceName(race.getRaceName());
+        existingRace.setRaceDate(race.getRaceDate());
+        existingRace.setRoundNumber(race.getRoundNumber());
+        existingRace.setSeason(race.getSeason());
+        existingRace.setCircuit(race.getCircuit());
+        
+        return raceRepository.save(existingRace);
+    }
+
     public void deleteRace(Long id) {
         raceRepository.deleteById(id);
     }

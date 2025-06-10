@@ -54,7 +54,7 @@ const TeamStandingPage: React.FC = () => {
         ? s.season.id.toString() === selectedSeasonId
         : true
     )
-    .sort((a, b) => a.position - b.position);
+    .sort((a, b) => b.points - a.points);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -89,9 +89,9 @@ const TeamStandingPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredStandings.map((s) => (
+            {filteredStandings.map((s, index) => (
               <tr key={s.id} className="border-t border-gray-700 hover:bg-gray-700 transition">
-                <td className="p-4">{s.position}</td>
+                <td className="p-4">{index + 1}</td>
                 <td className="p-4 flex items-center space-x-4">
                   <img
                     src={s.team.logoUrl}

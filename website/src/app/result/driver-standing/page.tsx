@@ -35,6 +35,12 @@ const DriverStandingPage: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [selectedSeason, setSelectedSeason] = useState<string>("");
 
+  // Default placeholder image for drivers
+  const defaultDriverImage = "https://www.formula1.com/etc.clientlibs/fom/clientlibs/publish/fom-2020/clientlibs/base/resources/img/F1/driver-placeholder.png";
+  
+  // Default placeholder image for teams
+  const defaultTeamLogo = "https://www.formula1.com/etc.clientlibs/fom/clientlibs/publish/fom-2020/clientlibs/base/resources/img/F1/team-placeholder.png";
+
   useEffect(() => {
     const fetchData = async () => {
       const [res1, res2] = await Promise.all([
@@ -55,10 +61,10 @@ const DriverStandingPage: React.FC = () => {
 
   const filtered = standings
     .filter(s => !selectedSeason || s.season.id.toString() === selectedSeason)
-    .sort((a, b) => a.position - b.position);
+    .sort((a, b) => b.points - a.points);
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-6">
       <h1 className="text-4xl font-bold text-center mb-8">Driver Standings</h1>
       <div className="flex justify-center mb-6">
         <select
@@ -89,12 +95,20 @@ const DriverStandingPage: React.FC = () => {
               <tr key={s.id} className="border-t border-gray-700 hover:bg-gray-700">
                 <td className="p-3">{s.position}</td>
                 <td className="p-3 flex items-center gap-3">
-                  <img src={s.driver.imageUrl} alt={s.driver.firstName} className="h-10 w-10 rounded-full" />
+                  <img 
+                    src={s.driver.imageUrl || defaultDriverImage} 
+                    alt={s.driver.firstName} 
+                    className="h-10 w-10 rounded-full object-cover bg-gray-700" 
+                  />
                   <span>{s.driver.firstName} {s.driver.lastName}</span>
                 </td>
                 <td className="p-3">{s.points}</td>
                 <td className="p-3 flex items-center gap-2">
-                  <img src={s.driver.team.logoUrl} className="h-6 w-6" />
+                  <img 
+                    src={s.driver.team.logoUrl || defaultTeamLogo} 
+                    alt={s.driver.team.name}
+                    className="h-6 w-6 object-contain bg-gray-700" 
+                  />
                   {s.driver.team.name}
                 </td>
                 <td className="p-3">{s.driver.nationality}</td>

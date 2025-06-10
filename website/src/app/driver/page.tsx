@@ -136,12 +136,14 @@ export default function DriverPage() {
                 </div>
                 {/* Driver image lớn, sát đáy thẻ */}
                 <div className="flex-1 flex items-end justify-center relative min-h-[300px]">
-                  <img
-                    src={s.driver.imageUrl}
-                    alt={s.driver.firstName}
-                    className="w-[240px] h-[300px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: "transparent" }}
-                  />
+                  {s.driver.imageUrl && s.driver.imageUrl.trim() !== "" && (
+                    <img
+                      src={s.driver.imageUrl}
+                      alt={s.driver.firstName}
+                      className="w-[240px] h-[300px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: "transparent" }}
+                    />
+                  )}
                   {/* Số áo lớn góc dưới trái, overlay lên ảnh */}
                   <div className="absolute left-6 bottom-4 text-7xl font-extrabold select-none" style={{ color: idx === 0 ? '#ff9800' : idx === 1 ? '#bdbdbd' : '#e53935', fontFamily:'F1Bold,Arial,sans-serif', opacity:0.95 }}>
                     {s.driver.number}
@@ -180,12 +182,14 @@ export default function DriverPage() {
                 </div>
                 {/* Driver image lớn hơn */}
                 <div className="flex-1 flex items-end justify-center relative min-h-[180px]">
-                  <img
-                    src={s.driver.imageUrl}
-                    alt={s.driver.firstName}
-                    className="w-[140px] h-[180px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: "transparent" }}
-                  />
+                  {s.driver.imageUrl && s.driver.imageUrl.trim() !== "" && (
+                    <img
+                      src={s.driver.imageUrl}
+                      alt={s.driver.firstName}
+                      className="w-[140px] h-[180px] object-contain drop-shadow-xl z-10 transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: "transparent" }}
+                    />
+                  )}
                   {/* Số áo lớn góc dưới */}
                   <div className="absolute left-5 bottom-4 text-5xl font-extrabold select-none" style={{ color: '#ff9800', fontFamily:'F1Bold,Arial,sans-serif', opacity:0.9 }}>
                     {s.driver.number}
