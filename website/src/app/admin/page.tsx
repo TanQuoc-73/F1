@@ -1,42 +1,106 @@
 "use client";
 
-import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+interface Stats {
+  totalSeasons: number;
+  totalRaces: number;
+  totalDrivers: number;
+  totalTeams: number;
+  totalDriverStandings: number;
+  totalTeamStandings: number;
+}
+
+const API_URL = "http://localhost:8080";
 
 export default function AdminPage() {
-  return (
-    <div className="space-y-6">
-      <div className="bg-gray-800 rounded-xl p-6">
-        <h1 className="text-3xl font-bold text-white mb-4">Welcome to Admin Dashboard</h1>
-        <p className="text-gray-300">
-          Use the sidebar to navigate between different management sections. You can manage teams, drivers, races, and more.
-        </p>
-      </div>
+  const [stats, setStats] = useState<Stats>({
+    totalSeasons: 0,
+    totalRaces: 0,
+    totalDrivers: 0,
+    totalTeams: 0,
+    totalDriverStandings: 0,
+    totalTeamStandings: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gray-800 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Quick Stats</h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Total Teams</span>
-              <span className="text-white font-semibold">10</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Total Drivers</span>
-              <span className="text-white font-semibold">20</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Total Races</span>
-              <span className="text-white font-semibold">24</span>
-            </div>
-          </div>
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [seasons, races, drivers, teams, driverStandings, teamStandings] = await Promise.all([
+          axios.get(`${API_URL}/seasons`),
+          axios.get(`${API_URL}/races`),
+          axios.get(`${API_URL}/drivers`),
+          axios.get(`${API_URL}/teams`),
+          axios.get(`${API_URL}/driver-standings`),
+          axios.get(`${API_URL}/team-standings`)
+        ]);
+
+        setStats({
+          totalSeasons: seasons.data.length,
+          totalRaces: races.data.length,
+          totalDrivers: drivers.data.length,
+          totalTeams: teams.data.length,
+          totalDriverStandings: driverStandings.data.length,
+          totalTeamStandings: teamStandings.data.length
+        });
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6">
+        <div className="max-w-7xl mx-auto">
+          <p>Loading...</p>
         </div>
+      </div>
+    );
+  }
 
-        <div className="bg-gray-800 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Recent Activity</h2>
-          <div className="space-y-4">
-            <div className="text-gray-300">
-              No recent activity to display
-            </div>
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Dashboard Overview</h1>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Seasons</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalSeasons}</p>
+            <p className="text-sm text-gray-400 mt-2">Total F1 seasons</p>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Races</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalRaces}</p>
+            <p className="text-sm text-gray-400 mt-2">Total races scheduled</p>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Drivers</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalDrivers}</p>
+            <p className="text-sm text-gray-400 mt-2">Active drivers</p>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Teams</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalTeams}</p>
+            <p className="text-sm text-gray-400 mt-2">Active teams</p>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Driver Standings</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalDriverStandings}</p>
+            <p className="text-sm text-gray-400 mt-2">Total driver standings</p>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2">Team Standings</h3>
+            <p className="text-3xl font-bold text-red-500">{stats.totalTeamStandings}</p>
+            <p className="text-sm text-gray-400 mt-2">Total team standings</p>
           </div>
         </div>
       </div>

@@ -14,6 +14,6 @@ public interface RaceRepository extends JpaRepository<Race, Long> {
     @Query("SELECT r FROM Race r WHERE r.raceDate >= :currentDate ORDER BY r.raceDate ASC")
     List<Race> findUpcomingRaces(@Param("currentDate") LocalDate currentDate);
 
-    @Query("SELECT r FROM Race r WHERE r.raceDate >= :currentDate ORDER BY r.raceDate ASC LIMIT :limit")
+    @Query("SELECT r FROM Race r WHERE r.raceDate >= :currentDate ORDER BY r.raceDate ASC")
     List<Race> findUpcomingRacesWithLimit(@Param("currentDate") LocalDate currentDate, @Param("limit") int limit);
 }

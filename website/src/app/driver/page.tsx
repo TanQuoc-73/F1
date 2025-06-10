@@ -1,18 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import DriverDetailModal from "@/components/DriverDetailModal";
 
 interface Team {
   id: number;
   name: string;
+  baseCountry: string;
   logoUrl: string;
+  principal: string;
+  powerUnit: string;
 }
 
 interface Driver {
   id: number;
   firstName: string;
   lastName: string;
-  imageUrl: string;
   nationality: string;
+  dateOfBirth: string;
+  imageUrl: string;
   number: number;
   team: Team;
 }
@@ -35,6 +40,7 @@ export default function DriverPage() {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
 
   // Fetch all seasons and set default to latest
   useEffect(() => {
@@ -103,9 +109,10 @@ export default function DriverPage() {
             {top3.map((s, idx) => (
               <div
                 key={s.id}
+                onClick={() => setSelectedDriver(s.driver)}
                 className={`relative group rounded-2xl flex flex-col items-stretch p-0 overflow-visible border-4 transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_40px_0_rgba(255,255,255,0.15)] ${
                   idx === 0 ? "border-yellow-400" : idx === 1 ? "border-gray-400" : "border-orange-400"
-                } bg-gray-800 w-full`}
+                } bg-gray-800 w-full cursor-pointer`}
                 style={{ minHeight: 480, minWidth: 300, maxWidth: 420, margin: '0 auto' }}
               >
                 {/* Top row: position & points */}
@@ -148,7 +155,8 @@ export default function DriverPage() {
             {rest.map((s) => (
               <div
                 key={s.id}
-                className="relative group flex flex-col items-stretch p-0 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_30px_0_rgba(255,255,255,0.10)] bg-gray-800 w-full"
+                onClick={() => setSelectedDriver(s.driver)}
+                className="relative group flex flex-col items-stretch p-0 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_30px_0_rgba(255,255,255,0.10)] bg-gray-800 w-full cursor-pointer"
                 style={{ minHeight: 380, minWidth: 220, maxWidth: 320, margin: '0 auto' }}
               >
                 {/* Top: position & points */}
@@ -188,6 +196,12 @@ export default function DriverPage() {
           </div>
         </>
       )}
+
+      <DriverDetailModal
+        isOpen={selectedDriver !== null}
+        onClose={() => setSelectedDriver(null)}
+        driver={selectedDriver}
+      />
     </div>
   );
 }

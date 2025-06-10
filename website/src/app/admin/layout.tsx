@@ -1,84 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
-
-interface AdminSection {
-  title: string;
-  href: string;
-  icon?: string;
-}
-
-const sections: AdminSection[] = [
-  { title: "Team", href: "/admin/team" },
-  { title: "Teams", href: "/admin/teams" },
-  { title: "Team Standings", href: "/admin/team-standings" },
-  { title: "Driver Standings", href: "/admin/driver-standings" },
-  { title: "Races", href: "/admin/races" },
-  { title: "Circuits", href: "/admin/circuit" },
-  { title: "Drivers", href: "/admin/drivers" },
-  { title: "Users", href: "/admin/users" },
-  { title: "News", href: "/admin/news" },
-  { title: "Settings", href: "/admin/settings" },
-];
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
 
-  return (
-    <ProtectedAdminRoute>
-      <div className="min-h-screen bg-gray-900">
-        {/* Sidebar */}
-        <div
-          className={`fixed top-0 left-0 h-full bg-gray-800 text-white transition-all duration-300 ${
-            isSidebarOpen ? "w-64" : "w-20"
-          }`}
-        >
-          <div className="p-4">
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="w-full text-left mb-6"
-            >
-              <h1 className={`font-bold ${isSidebarOpen ? "text-xl" : "text-lg"}`}>
-                {isSidebarOpen ? "Admin Panel" : "AP"}
-              </h1>
-            </button>
-            <nav className="space-y-2">
-              {sections.map((section) => (
-                <Link
-                  key={section.href}
-                  href={section.href}
-                  className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    pathname === section.href
-                      ? "bg-red-600 text-white"
-                      : "text-gray-300 hover:bg-gray-700"
-                  }`}
-                >
-                  <span className={isSidebarOpen ? "ml-2" : "mx-auto"}>
-                    {isSidebarOpen ? section.title : section.title.charAt(0)}
-                  </span>
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
 
-        {/* Main Content */}
-        <div
-          className={`transition-all duration-300 ${
-            isSidebarOpen ? "ml-64" : "ml-20"
-          }`}
-        >
-          <main className="p-8">{children}</main>
+  const sections = [
+    { name: "Dashboard", href: "/admin" },
+    { name: "Seasons", href: "/admin/seasons" },
+    { name: "Races", href: "/admin/races" },
+    { name: "Drivers", href: "/admin/drivers" },
+    { name: "Teams", href: "/admin/teams" },
+    { name: "Driver Standings", href: "/admin/driver-standings" },
+    { name: "Team Standings", href: "/admin/team-standings" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-black flex">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-900 min-h-screen fixed left-0 top-0">
+        <div className="p-4">
+          <Link href="/admin" className="text-white font-bold text-xl block mb-8">
+            F1 Admin
+          </Link>
+          <nav className="space-y-2 mt-20">
+            {sections.map((section) => (
+              <Link
+                key={section.href}
+                href={section.href}
+                className={`block px-4 py-2 rounded-lg transition-colors ${
+                  isActive(section.href)
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                }`}
+              >
+                {section.name}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
-    </ProtectedAdminRoute>
+
+      {/* Main Content */}
+      <div className="flex-1 ml-64">
+        <main className="p-6">{children}</main>
+      </div>
+    </div>
   );
 } 

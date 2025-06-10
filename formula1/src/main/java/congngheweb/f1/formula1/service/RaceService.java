@@ -36,6 +36,7 @@ public class RaceService {
     }
 
     public List<Race> getUpcomingRacesWithLimit(int limit) {
-        return raceRepository.findUpcomingRacesWithLimit(LocalDate.now(), limit);
+        List<Race> races = raceRepository.findUpcomingRacesWithLimit(LocalDate.now(), limit);
+        return races.stream().limit(limit).toList();
     }
 }
