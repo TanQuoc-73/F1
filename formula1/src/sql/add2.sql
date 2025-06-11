@@ -77,3 +77,48 @@ VALUES
 (1, 5, 140.0, 5),
 (2, 2, 450.0, 1),
 (2, 1, 400.0, 2);
+
+
+
+INSERT INTO teams (name, base_country, logo_url, principal, power_unit) VALUES
+('Alpine', 'France', 'https://media.formula1.com/image/upload/f_auto/q_auto/v1684406592/fom-website/teams/Alpine/logo.png', 'Bruno Famin', 'Renault'),
+('Williams', 'United Kingdom', 'https://media.formula1.com/image/upload/f_auto/q_auto/v1684406592/fom-website/teams/Williams/logo.png', 'James Vowles', 'Mercedes'),
+('RB', 'Italy', 'https://media.formula1.com/image/upload/f_auto/q_auto/v1705500121/fom-website/teams/RB/logo.png', 'Laurent Mekies', 'Honda RBPT'),
+('Kick Sauber', 'Switzerland', 'https://media.formula1.com/image/upload/f_auto/q_auto/v1705500121/fom-website/teams/Kick%20Sauber/logo.png', 'Alessandro Alunni Bravi', 'Ferrari'),
+('Haas', 'United States', 'https://media.formula1.com/image/upload/f_auto/q_auto/v1684406592/fom-website/teams/Haas/logo.png', 'Ayao Komatsu', 'Ferrari');
+
+
+INSERT INTO drivers (first_name, last_name, nationality, date_of_birth, team_id, image_url, number) VALUES
+('Oscar', 'Piastri', 'Australia', '2001-04-06', 4, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/oscar-piastri.png', 81),
+('George', 'Russell', 'United Kingdom', '1998-02-15', 3, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/george-russell.png', 63),
+('Kimi', 'Antonelli', 'Italy', '2006-08-25', 3, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/kimi-antonelli.png', 34),
+('Yuki', 'Tsunoda', 'Japan', '2000-05-11', 2, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/yuki-tsunoda.png', 22),
+('Alexander', 'Albon', 'Thailand', '1996-03-23', 8, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/alexander-albon.png', 23),
+('Carlos', 'Sainz', 'Spain', '1994-09-01', 8, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/carlos-sainz.png', 55),
+('Liam', 'Lawson', 'New Zealand', '2002-02-11', 9, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/liam-lawson.png', 40),
+('Isack', 'Hadjar', 'France', '2004-09-28', 9, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/isack-hadjar.png', 20),
+('Esteban', 'Ocon', 'France', '1996-09-17', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/esteban-ocon.png', 31),
+('Oliver', 'Bearman', 'United Kingdom', '2005-05-08', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/oliver-bearman.png', 87),
+('Nico', 'Hülkenberg', 'Germany', '1987-08-19', 10, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/nico-hulkenberg.png', 27),
+('Gabriel', 'Bortoleto', 'Brazil', '2004-10-14', 10, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/gabriel-bortoleto.png', 42),
+('Lance', 'Stroll', 'Canada', '1998-10-29', 5, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/lance-stroll.png', 18),
+('Pierre', 'Gasly', 'France', '1996-02-07', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/pierre-gasly.png', 10),
+('Franco', 'Colapinto', 'Argentina', '2003-05-27', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/franco-colapinto.png', 21);
+
+
+INSERT INTO drivers (first_name, last_name, nationality, date_of_birth, team_id, image_url, number) VALUES
+('Oscar', 'Piastri', 'Australia', '2001-04-06', 4, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/oscar-piastri.png', 81),
+('Yuki', 'Tsunoda', 'Japan', '2000-05-11', 2, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/yuki-tsunoda.png', 22),
+('George', 'Russell', 'United Kingdom', '1998-02-15', 3, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/george-russell.png', 63),
+('Kimi', 'Antonelli', 'Italy', '2006-08-25', 3, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/kimi-antonelli.png', 12),
+('Alexander', 'Albon', 'Thailand', '1996-03-23', 8, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/alexander-albon.png', 23),
+('Carlos', 'Sainz', 'Spain', '1994-09-01', 8, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/carlos-sainz.png', 55),
+('Isack', 'Hadjar', 'France', '2004-09-28', 9, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/isack-hadjar.png', 6),
+('Liam', 'Lawson', 'New Zealand', '2002-02-11', 9, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/liam-lawson.png', 20),
+('Esteban', 'Ocon', 'France', '1996-09-17', 11, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/esteban-ocon.png', 31),
+('Oliver', 'Bearman', 'United Kingdom', '2005-05-08', 11, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/oliver-bearman.png', 87),
+('Nico', 'Hülkenberg', 'Germany', '1987-08-19', 10, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/nico-hulkenberg.png', 27),
+('Gabriel', 'Bortoleto', 'Brazil', '2004-10-14', 10, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/gabriel-bortoleto.png', 5),
+('Lance', 'Stroll', 'Canada', '1998-10-29', 5, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/lance-stroll.png', 18),
+('Pierre', 'Gasly', 'France', '1996-02-07', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/pierre-gasly.png', 10),
+('Franco', 'Colapinto', 'Argentina', '2003-05-27', 7, 'https://media.formula1.com/image/upload/f_auto/q_auto/v1682501380/fom-website/drivers/franco-colapinto.png', 43);

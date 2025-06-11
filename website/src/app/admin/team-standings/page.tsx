@@ -39,6 +39,14 @@ interface RaceResult {
   points: number;
 }
 
+interface DriverStanding {
+  id: number;
+  driver: Driver;
+  season: Season;
+  points: number;
+  position: number;
+}
+
 const TeamStandingAdminPage: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -83,31 +91,53 @@ const TeamStandingAdminPage: React.FC = () => {
   const calculateStandings = async (seasonId: number) => {
     setIsLoading(true);
     try {
-      // Lọc kết quả theo mùa
-      const seasonResults = raceResults.filter(
-        result => result.race.season.id === seasonId
+      // Lấy driver standings cho mùa giải
+      const driverStandingsRes = await fetch("http://localhost:8080/driver-standings");
+      const driverStandings: DriverStanding[] = await driverStandingsRes.json();
+      
+      // Lọc driver standings theo mùa
+      const seasonDriverStandings = driverStandings.filter(
+        (standing: DriverStanding) => standing.season.id === seasonId
       );
 
-      // Tính tổng điểm cho từng team
-      const teamPoints = seasonResults.reduce((acc, result) => {
-        const teamId = result.team.id;
+      // Nhóm tay đua theo team
+      const teamDrivers = seasonDriverStandings.reduce((acc: Record<number, { team: Team; drivers: { driver: Driver; points: number }[] }>, standing: DriverStanding) => {
+        const teamId = standing.driver.team.id;
         if (!acc[teamId]) {
           acc[teamId] = {
-            team: result.team,
-            points: 0
+            team: standing.driver.team,
+            drivers: []
           };
         }
-        acc[teamId].points += result.points;
+        acc[teamId].drivers.push({
+          driver: standing.driver,
+          points: standing.points
+        });
         return acc;
-      }, {} as Record<number, { team: Team; points: number }>);
+      }, {});
 
-      // Chuyển đổi thành mảng và sắp xếp theo điểm
-      const sortedStandings = Object.values(teamPoints)
+      // Tính điểm team dựa trên 2 tay đua có điểm cao nhất
+      const teamStandings = Object.values(teamDrivers).map((team: { team: Team; drivers: { driver: Driver; points: number }[] }) => {
+        // Sắp xếp tay đua theo điểm từ cao xuống thấp
+        const sortedDrivers = team.drivers.sort((a: { points: number }, b: { points: number }) => b.points - a.points);
+        // Lấy 2 tay đua có điểm cao nhất
+        const topTwoDrivers = sortedDrivers.slice(0, 2);
+        // Tính tổng điểm của 2 tay đua
+        const totalPoints = topTwoDrivers.reduce((sum: number, driver: { points: number }) => sum + driver.points, 0);
+
+        return {
+          team: team.team,
+          season: { id: seasonId },
+          points: totalPoints,
+          position: 0 // Sẽ được cập nhật sau khi sắp xếp
+        };
+      });
+
+      // Sắp xếp team theo điểm và cập nhật vị trí
+      const sortedStandings = teamStandings
         .sort((a, b) => b.points - a.points)
         .map((standing, index) => ({
-          team: standing.team,
-          season: { id: seasonId },
-          points: standing.points,
+          ...standing,
           position: index + 1
         }));
 

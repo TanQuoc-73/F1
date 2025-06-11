@@ -30,6 +30,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public User createUser(User user) {
         // Encode password before saving
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));

@@ -23,6 +23,7 @@ export default function AdminLayout({
     { name: "Teams", href: "/admin/teams" },
     { name: "Driver Standings", href: "/admin/driver-standings" },
     { name: "Team Standings", href: "/admin/team-standings" },
+    { name: "News", href: "/admin/news" },
   ];
 
   return (

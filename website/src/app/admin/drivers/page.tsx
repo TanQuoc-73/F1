@@ -20,13 +20,13 @@ interface Driver {
 }
 
 const initialFormState = {
-  firstName: "",
-  lastName: "",
-  nationality: "",
-  dateOfBirth: "",
-  imageUrl: "",
-  number: 0,
-  teamId: 0,
+    firstName: "",
+    lastName: "",
+    nationality: "",
+    dateOfBirth: "",
+    imageUrl: "",
+    number: 0,
+    teamId: 0,
 };
 
 export default function DriversAdminPage() {

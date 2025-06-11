@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -86,6 +87,7 @@ public class UserController {
             response.put("token", token);
             response.put("username", user.getUsername());
             response.put("role", user.getRole().name());
+            response.put("id", user.getId());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -114,5 +116,48 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, String> updateData) {
+        try {
+            Optional<User> userOpt = userService.getUserById(id);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            User user = userOpt.get();
+            String username = updateData.get("username");
+            String email = updateData.get("email");
+            String password = updateData.get("password");
+            String role = updateData.get("role");
+
+            if (username != null && !username.equals(user.getUsername())) {
+                if (userService.getUserByUsername(username).isPresent()) {
+                    return ResponseEntity.badRequest().body("Username already exists");
+                }
+                user.setUsername(username);
+            }
+
+            if (email != null && !email.equals(user.getEmail())) {
+                if (userService.getUserByEmail(email).isPresent()) {
+                    return ResponseEntity.badRequest().body("Email already exists");
+                }
+                user.setEmail(email);
+            }
+
+            if (password != null && !password.isEmpty()) {
+                user.setPasswordHash(password); // Will be encoded in service
+            }
+
+            if (role != null) {
+                user.setRole(User.Role.valueOf(role.toUpperCase()));
+            }
+
+            User updatedUser = userService.createUser(user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating user: " + e.getMessage());
+        }
     }
 }

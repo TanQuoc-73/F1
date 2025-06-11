@@ -49,7 +49,7 @@ const DriverStandingAdminPage: React.FC = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     setIsLoading(true);
     try {
       const [driversRes, seasonsRes, standingsRes, resultsRes] = await Promise.all([
@@ -124,8 +124,8 @@ const DriverStandingAdminPage: React.FC = () => {
         } else {
           // Create new standing
           await fetch("http://localhost:8080/driver-standings", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
             body: JSON.stringify(standing)
           });
         }
@@ -142,10 +142,10 @@ const DriverStandingAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`http://localhost:8080/driver-standings/${id}`, {
-        method: "DELETE"
-      });
-      setStandings(standings.filter(s => s.id !== id));
+    await fetch(`http://localhost:8080/driver-standings/${id}`, {
+      method: "DELETE"
+    });
+    setStandings(standings.filter(s => s.id !== id));
       setDeleteConfirmId(null);
     } catch (error) {
       console.error("Error deleting standing:", error);
@@ -169,13 +169,13 @@ const DriverStandingAdminPage: React.FC = () => {
               ))}
             </select>
             {filterSeasonId && (
-              <button
+            <button
                 onClick={() => calculateStandings(parseInt(filterSeasonId))}
                 disabled={isLoading}
                 className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded disabled:opacity-50"
-              >
+            >
                 {isLoading ? "Calculating..." : "Calculate Standings"}
-              </button>
+            </button>
             )}
           </div>
         </div>
@@ -220,7 +220,7 @@ const DriverStandingAdminPage: React.FC = () => {
                 ))}
             </tbody>
           </table>
-        </div>
+      </div>
 
         {/* Delete Confirmation Modal */}
         {deleteConfirmId && (
@@ -247,7 +247,7 @@ const DriverStandingAdminPage: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+        </div>
     </div>
   );
 };

@@ -27,34 +27,34 @@ public class DriverService {
         return driverRepository.save(driver);
     }
 
+    public Driver updateDriver(Long id, Driver updatedDriver) {
+        return driverRepository.findById(id)
+            .map(driver -> {
+                driver.setFirstName(updatedDriver.getFirstName());
+                driver.setLastName(updatedDriver.getLastName());
+                driver.setNationality(updatedDriver.getNationality());
+                driver.setTeam(updatedDriver.getTeam());
+                driver.setNumber(updatedDriver.getNumber());
+                driver.setDateOfBirth(updatedDriver.getDateOfBirth());
+                driver.setImageUrl(updatedDriver.getImageUrl());
+                return driverRepository.save(driver);
+            })
+            .orElseThrow(() -> new RuntimeException("Driver not found with id: " + id));
+    }
+
     public void deleteDriver(Long id) {
         driverRepository.deleteById(id);
     }
 
     public List<Driver> filterDrivers(String team, String nationality) {
-        if (team != null && team.trim().isEmpty()) {
-            team = null;
-        }
-        if (nationality != null && nationality.trim().isEmpty()) {
-            nationality = null;
-        }
         return driverRepository.findByTeamNameAndNationality(team, nationality);
     }
 
-
     public List<String> getAllTeamNames() {
-        return driverRepository.findAll()
-                .stream()
-                .map(d -> d.getTeam().getName())
-                .distinct()
-                .collect(Collectors.toList());
+        return driverRepository.findDistinctTeamNames();
     }
 
     public List<String> getAllNationalities() {
-        return driverRepository.findAll()
-                .stream()
-                .map(Driver::getNationality)
-                .distinct()
-                .collect(Collectors.toList());
+        return driverRepository.findDistinctNationalities();
     }
 }

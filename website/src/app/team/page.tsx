@@ -37,12 +37,16 @@ interface TeamStanding {
 
 export default function TeamPage() {
   const [teamStandings, setTeamStandings] = useState<TeamStanding[]>([]);
+  const [filteredStandings, setFilteredStandings] = useState<TeamStanding[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<TeamStanding | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"position" | "points" | "name">("position");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // Fetch all seasons and set default to latest
   useEffect(() => {
@@ -51,7 +55,6 @@ export default function TeamPage() {
       const data = await res.json();
       setSeasons(data);
       if (data.length > 0) {
-        // Chọn mùa mới nhất (năm lớn nhất)
         const latest = data.reduce((a: Season, b: Season) => (a.year > b.year ? a : b));
         setSelectedSeason(latest);
       }
@@ -63,18 +66,21 @@ export default function TeamPage() {
   useEffect(() => {
     if (!selectedSeason) {
       setTeamStandings([]);
+      setFilteredStandings([]);
       return;
     }
     setLoading(true);
-    setTeamStandings([]); // Reset standings khi đổi season
+    setTeamStandings([]);
+    setFilteredStandings([]);
     Promise.all([
       fetch(`http://localhost:8080/team-standings?seasonId=${selectedSeason.id}`).then(res => res.json()),
       fetchDrivers()
     ])
       .then(([standingsData, driversData]) => {
-        // Chỉ lấy standings đúng mùa
         const filtered = standingsData.filter((s: TeamStanding) => s.season.id === selectedSeason.id);
-        setTeamStandings(filtered.sort((a: TeamStanding, b: TeamStanding) => a.position - b.position));
+        const sorted = filtered.sort((a: TeamStanding, b: TeamStanding) => a.position - b.position);
+        setTeamStandings(sorted);
+        setFilteredStandings(sorted);
         setDrivers(driversData);
         setLoading(false);
       })
@@ -85,32 +91,112 @@ export default function TeamPage() {
       });
   }, [selectedSeason]);
 
+  // Filter and sort teams
+  useEffect(() => {
+    let filtered = [...teamStandings];
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(standing =>
+        standing.team.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case "position":
+          comparison = a.position - b.position;
+          break;
+        case "points":
+          comparison = b.points - a.points;
+          break;
+        case "name":
+          comparison = a.team.name.localeCompare(b.team.name);
+          break;
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    setFilteredStandings(filtered);
+  }, [teamStandings, searchQuery, sortBy, sortOrder]);
+
   if (loading) return <p className="text-center mt-4 text-white">Loading teams...</p>;
   if (error) return <p className="text-center mt-4 text-red-600">{error}</p>;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <h1 className="text-4xl font-bold text-center mb-8">F1 Teams</h1>
-      {/* Season Filter */}
-      <div className="flex justify-center mb-8">
-        <select
-          className="bg-gray-800 text-white px-4 py-2 rounded"
-          value={selectedSeason?.id || ''}
-          onChange={e => {
-            const season = seasons.find(s => s.id === Number(e.target.value));
-            setSelectedSeason(season || null);
-          }}
-        >
-          {seasons.map(s => (
-            <option key={s.id} value={s.id}>{s.year}</option>
-          ))}
-        </select>
+      
+      {/* Filters and Search */}
+      <div className="max-w-6xl mx-auto mb-8 space-y-4">
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+          {/* Season Filter */}
+          <select
+            className="bg-gray-800 text-white px-4 py-2 rounded w-full md:w-auto"
+            value={selectedSeason?.id || ''}
+            onChange={e => {
+              const season = seasons.find(s => s.id === Number(e.target.value));
+              setSelectedSeason(season || null);
+            }}
+          >
+            {seasons.map(s => (
+              <option key={s.id} value={s.id}>{s.year}</option>
+            ))}
+          </select>
+
+          {/* Search */}
+          <div className="relative w-full md:w-auto">
+            <input
+              type="text"
+              placeholder="Search teams..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-gray-800 text-white px-4 py-2 rounded w-full md:w-64 pl-10"
+            />
+            <svg
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          {/* Sort Controls */}
+          <div className="flex gap-2 w-full md:w-auto">
+            <select
+              className="bg-gray-800 text-white px-4 py-2 rounded"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as "position" | "points" | "name")}
+            >
+              <option value="position">Position</option>
+              <option value="points">Points</option>
+              <option value="name">Team Name</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700"
+            >
+              {sortOrder === "asc" ? "↑" : "↓"}
+            </button>
+          </div>
+        </div>
+
+        {selectedSeason && (
+          <div className="text-center text-gray-400">Season {selectedSeason.year}</div>
+        )}
       </div>
-      {selectedSeason && (
-        <div className="text-center text-gray-400 mb-8">Season {selectedSeason.year}</div>
-      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        {teamStandings.map((standing) => {
+        {filteredStandings.map((standing) => {
           const teamDrivers = drivers.filter(d => d.team.id === standing.team.id);
           return (
             <div

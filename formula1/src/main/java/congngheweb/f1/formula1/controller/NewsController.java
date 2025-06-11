@@ -40,22 +40,67 @@ public class NewsController {
 
     @PostMapping
     public ResponseEntity<?> createNews(@RequestBody Map<String, Object> payload) {
-        String title = (String) payload.get("title");
-        String content = (String) payload.get("content");
-        String imageUrl = (String) payload.get("imageUrl");
-        Integer authorId = (Integer) payload.get("authorId");
+        try {
+            String title = (String) payload.get("title");
+            String content = (String) payload.get("content");
+            String imageUrl = (String) payload.get("imageUrl");
+            Integer authorId = (Integer) payload.get("authorId");
 
-        Optional<User> authorOpt = userService.getUserById(Long.valueOf(authorId));
-        if (authorOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("Author not found");
+            if (title == null || content == null || authorId == null) {
+                return ResponseEntity.badRequest().body("Title, content and authorId are required");
+            }
+
+            Optional<User> authorOpt = userService.getUserById(authorId.longValue());
+            if (authorOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body("Author not found");
+            }
+
+            News news = new News(title, content, imageUrl, authorOpt.get());
+            return ResponseEntity.ok(newsService.createNews(news));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating news: " + e.getMessage());
         }
+    }
 
-        News news = new News(title, content, imageUrl, authorOpt.get());
-        return ResponseEntity.ok(newsService.createNews(news));
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateNews(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        try {
+            Optional<News> existingNewsOpt = newsService.getNewsById(id);
+            if (existingNewsOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            News existingNews = existingNewsOpt.get();
+            String title = (String) payload.get("title");
+            String content = (String) payload.get("content");
+            String imageUrl = (String) payload.get("imageUrl");
+
+            if (title == null || content == null) {
+                return ResponseEntity.badRequest().body("Title and content are required");
+            }
+
+            existingNews.setTitle(title);
+            existingNews.setContent(content);
+            if (imageUrl != null) {
+                existingNews.setImageUrl(imageUrl);
+            }
+
+            return ResponseEntity.ok(newsService.createNews(existingNews));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating news: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNews(@PathVariable Long id) {
-        newsService.deleteNews(id);
+    public ResponseEntity<?> deleteNews(@PathVariable Long id) {
+        try {
+            newsService.deleteNews(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting news: " + e.getMessage());
+        }
     }
 }

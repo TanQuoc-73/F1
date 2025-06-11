@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Team {
-  id?: number;
+  id: number;
   name: string;
   baseCountry: string;
   logoUrl: string;
@@ -11,152 +11,308 @@ interface Team {
   powerUnit: string;
 }
 
-export default function TeamsAdminPage() {
+const TeamAdminPage: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
-  const [form, setForm] = useState<Team>({
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+  const [formData, setFormData] = useState({
     name: "",
     baseCountry: "",
     logoUrl: "",
     principal: "",
-    powerUnit: "",
+    powerUnit: ""
   });
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchTeams();
   }, []);
 
   const fetchTeams = async () => {
-    const res = await fetch("http://localhost:8080/teams");
-    const data = await res.json();
-    setTeams(data);
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8080/teams");
+      const data = await response.json();
+      setTeams(data);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const method = editingId ? "PUT" : "POST";
-    const url = editingId
-      ? `http://localhost:8080/teams/${editingId}`
-      : "http://localhost:8080/teams";
+    setIsLoading(true);
 
-    await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      // Validate form data
+      if (!formData.name.trim() || !formData.baseCountry.trim() || !formData.principal.trim() || !formData.powerUnit.trim()) {
+        throw new Error("Name, base country, principal and power unit are required");
+      }
 
-    setForm({
-      name: "",
-      baseCountry: "",
-      logoUrl: "",
-      principal: "",
-      powerUnit: "",
-    });
-    setEditingId(null);
-    fetchTeams();
+      const url = editingTeam
+        ? `http://localhost:8080/teams/${editingTeam.id}`
+        : "http://localhost:8080/teams";
+      
+      const method = editingTeam ? "PUT" : "POST";
+      const payload = {
+        name: formData.name.trim(),
+        baseCountry: formData.baseCountry.trim(),
+        logoUrl: formData.logoUrl.trim(),
+        principal: formData.principal.trim(),
+        powerUnit: formData.powerUnit.trim()
+      };
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData || "Failed to save team");
+      }
+
+      await fetchTeams();
+      setIsModalOpen(false);
+      setEditingTeam(null);
+      setFormData({
+        name: "",
+        baseCountry: "",
+        logoUrl: "",
+        principal: "",
+        powerUnit: ""
+      });
+    } catch (error) {
+      console.error("Error saving team:", error);
+      alert(error instanceof Error ? error.message : "Failed to save team");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEdit = (team: Team) => {
-    setForm(team);
-    setEditingId(team.id!);
+    setEditingTeam(team);
+    setFormData({
+      name: team.name,
+      baseCountry: team.baseCountry,
+      logoUrl: team.logoUrl,
+      principal: team.principal,
+      powerUnit: team.powerUnit
+    });
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`http://localhost:8080/teams/${id}`, {
-      method: "DELETE",
-    });
-    fetchTeams();
+    try {
+      await fetch(`http://localhost:8080/teams/${id}`, {
+        method: "DELETE"
+      });
+      setTeams(teams.filter(t => t.id !== id));
+      setDeleteConfirmId(null);
+    } catch (error) {
+      console.error("Error deleting team:", error);
+    }
   };
 
   return (
-    <div className="p-6 bg-black text-white min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Team Management</h1>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-4 rounded mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Base Country"
-            value={form.baseCountry}
-            onChange={(e) => setForm({ ...form, baseCountry: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Principal"
-            value={form.principal}
-            onChange={(e) => setForm({ ...form, principal: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Power Unit"
-            value={form.powerUnit}
-            onChange={(e) => setForm({ ...form, powerUnit: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Logo URL"
-            value={form.logoUrl}
-            onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
-            className="col-span-2 p-2 rounded bg-gray-700 text-white"
-          />
+    <div className="min-h-screen bg-gray-950 text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Team Management</h1>
+          <button
+            onClick={() => {
+              setEditingTeam(null);
+              setFormData({
+                name: "",
+                baseCountry: "",
+                logoUrl: "",
+                principal: "",
+                powerUnit: ""
+              });
+              setIsModalOpen(true);
+            }}
+            className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
+          >
+            Add Team
+          </button>
         </div>
-        <button
-          type="submit"
-          className="mt-4 bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {editingId ? "Update" : "Create"} Team
-        </button>
-      </form>
 
-      {/* List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teams.map((team) => (
-          <div key={team.id} className="bg-gray-900 p-4 rounded shadow">
-            {team.logoUrl && (
-              <img
-                src={team.logoUrl}
-                alt={team.name}
-                className="w-full h-32 object-contain bg-white p-2 rounded mb-4"
-              />
-            )}
-            <h2 className="text-xl font-bold">{team.name}</h2>
-            <p className="text-gray-400">{team.baseCountry}</p>
-            <p className="text-sm text-gray-500">Principal: {team.principal}</p>
-            <p className="text-sm text-gray-500">Power Unit: {team.powerUnit}</p>
-            <div className="mt-3 flex gap-2">
-              <button
-                onClick={() => handleEdit(team)}
-                className="px-3 py-1 text-sm bg-yellow-600 rounded hover:bg-yellow-700"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(team.id!)}
-                className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-700"
-              >
-                Delete
-              </button>
+        <div className="bg-gray-800 rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="p-4 text-left">Logo</th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Base Country</th>
+                <th className="p-4 text-left">Principal</th>
+                <th className="p-4 text-left">Power Unit</th>
+                <th className="p-4 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teams.map(team => (
+                <tr key={team.id} className="border-t border-gray-700 hover:bg-gray-700 group">
+                  <td className="p-4">
+                    {team.logoUrl ? (
+                      <img
+                        src={team.logoUrl}
+                        alt={team.name}
+                        className="h-10 w-10 object-contain"
+                      />
+                    ) : (
+                      <div className="h-10 w-10 bg-gray-700 rounded flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">No logo</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="p-4">{team.name}</td>
+                  <td className="p-4">{team.baseCountry}</td>
+                  <td className="p-4">{team.principal}</td>
+                  <td className="p-4">{team.powerUnit}</td>
+                  <td className="p-4">
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleEdit(team)}
+                        className="text-blue-400 hover:text-blue-600"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirmId(team.id)}
+                        className="text-red-400 hover:text-red-600"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Add/Edit Team Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold mb-4">
+                {editingTeam ? "Edit Team" : "Add New Team"}
+              </h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-gray-700 rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Base Country</label>
+                  <input
+                    type="text"
+                    value={formData.baseCountry}
+                    onChange={(e) => setFormData({ ...formData, baseCountry: e.target.value })}
+                    className="w-full bg-gray-700 rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Logo URL</label>
+                  <input
+                    type="url"
+                    value={formData.logoUrl}
+                    onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+                    className="w-full bg-gray-700 rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Principal</label>
+                  <input
+                    type="text"
+                    value={formData.principal}
+                    onChange={(e) => setFormData({ ...formData, principal: e.target.value })}
+                    className="w-full bg-gray-700 rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Power Unit</label>
+                  <input
+                    type="text"
+                    value={formData.powerUnit}
+                    onChange={(e) => setFormData({ ...formData, powerUnit: e.target.value })}
+                    className="w-full bg-gray-700 rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-4 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setEditingTeam(null);
+                      setFormData({
+                        name: "",
+                        baseCountry: "",
+                        logoUrl: "",
+                        principal: "",
+                        powerUnit: ""
+                      });
+                    }}
+                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded disabled:opacity-50"
+                  >
+                    {isLoading ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        ))}
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
+              <p className="text-gray-300 mb-6">
+                Are you sure you want to delete this team? This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteConfirmId)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default TeamAdminPage;

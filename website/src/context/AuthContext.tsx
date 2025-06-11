@@ -54,14 +54,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(response.data);
           setRole(response.data.role);
           setIsAuthenticated(true);
-        } catch (error) {
-          console.error('Error fetching user info:', error);
-          setToken(null);
-          setUser(null);
-          setRole(null);
-          setIsAuthenticated(false);
-          if (isClient) {
-            localStorage.removeItem('token');
+        } catch (error: any) {
+          console.error('Error fetching user info:', error.response?.data || error.message);
+          // If the token is invalid or expired, clear everything
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            setToken(null);
+            setUser(null);
+            setRole(null);
+            setIsAuthenticated(false);
+            if (isClient) {
+              localStorage.removeItem('token');
+            }
           }
         }
       }
@@ -73,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       const response = await axios.post('/users/login', { username, password });
-      const { token: newToken, username: responseUsername, role: userRole } = response.data;
+      const { token: newToken, username: responseUsername, role: userRole, id } = response.data;
       
       if (isClient) {
         localStorage.setItem('token', newToken);
@@ -81,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setToken(newToken);
       setUser({
-        id: 0,
+        id,
         username: responseUsername,
         email: '',
         role: userRole
