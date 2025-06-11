@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import RaceResultModal from "@/components/RaceResultModal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Loader2, Calendar, MapPin, Flag, Search, Filter, ChevronDown } from "lucide-react";
 
 interface Season {
   id: number;
@@ -68,6 +72,9 @@ export default function RacePage() {
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Fetch all race results and extract unique seasons
   useEffect(() => {
@@ -107,10 +114,21 @@ export default function RacePage() {
     fetchData();
   }, []);
 
-  // Filter races by selected season
-  const filteredRaces = selectedSeason
-    ? races.filter(race => race.season.id === selectedSeason.id)
-    : [];
+  // Get unique countries for filter
+  const countries = Array.from(new Set(races.map(race => race.circuit.country))).sort();
+
+  // Filter races by selected season, search query and country
+  const filteredRaces = races.filter(race => {
+    const matchesSeason = selectedSeason ? race.season.id === selectedSeason.id : true;
+    const matchesSearch = 
+      race.raceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      race.circuit.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      race.circuit.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      race.circuit.country.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCountry = selectedCountry === "" || race.circuit.country === selectedCountry;
+    
+    return matchesSeason && matchesSearch && matchesCountry;
+  });
 
   // Get results for selected race
   const selectedRaceResults = selectedRace
@@ -124,44 +142,117 @@ export default function RacePage() {
     return raceDate > today;
   };
 
-  if (loading) return <div className="text-center mt-4 text-white">Loading races...</div>;
-  if (error) return <div className="text-center mt-4 text-red-600">{error}</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-500 text-2xl">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <h1 className="text-4xl font-bold text-center mb-8">F1 Races</h1>
       
       {/* Season Filter */}
-      <div className="flex justify-center mb-8">
-        <select
-          className="bg-gray-800 text-white px-4 py-2 rounded"
-          value={selectedSeason?.id || ''}
-          onChange={e => {
-            const season = seasons.find(s => s.id === Number(e.target.value));
-            setSelectedSeason(season || null);
-          }}
-        >
-          {seasons.map(s => (
-            <option key={s.id} value={s.id}>{s.year}</option>
-          ))}
-        </select>
-      </div>
+      <div className="max-w-7xl mx-auto mb-8">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="w-full md:w-64">
+            <select
+              className="w-full bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              value={selectedSeason?.id || ''}
+              onChange={e => {
+                const season = seasons.find(s => s.id === Number(e.target.value));
+                setSelectedSeason(season || null);
+              }}
+            >
+              {seasons.map(s => (
+                <option key={s.id} value={s.id}>Season {s.year}</option>
+              ))}
+            </select>
+          </div>
 
-      {selectedSeason && (
-        <div className="text-center text-gray-400 mb-8">Season {selectedSeason.year}</div>
-      )}
+          <div className="flex gap-4 w-full md:w-auto">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search races..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
+              />
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="bg-gray-800 border-gray-700 hover:bg-gray-700"
+            >
+              <Filter className="w-5 h-5 mr-2" />
+              Filters
+              <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Additional Filters */}
+        {showFilters && (
+          <div className="mt-4 p-4 bg-gray-800 rounded-md border border-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Country</label>
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  <option value="">All Countries</option>
+                  {countries.map((country) => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Results Count */}
+        <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
+          <span>Found {filteredRaces.length} races</span>
+          {(searchQuery || selectedCountry) && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCountry('');
+              }}
+              className="text-gray-400 hover:text-white"
+            >
+              Clear filters
+            </Button>
+          )}
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
         {filteredRaces.map((race) => {
           const upcoming = isUpcomingRace(race);
           return (
-            <div
+            <Card
               key={race.id}
               onClick={() => setSelectedRace(race)}
-              className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+              className={`bg-gray-800 border-gray-700 cursor-pointer transition-all duration-300 ${
                 upcoming 
-                  ? 'hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 border-2 border-red-500/50' 
-                  : 'hover:scale-105'
+                  ? 'hover:bg-gray-700 border-red-500/50' 
+                  : 'hover:bg-gray-700'
               }`}
             >
               {/* Circuit Image */}
@@ -181,41 +272,43 @@ export default function RacePage() {
               )}
 
               {/* Race Info */}
-              <div className="p-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className={`text-xl font-bold ${upcoming ? 'text-red-400' : 'text-blue-400'}`}>
+                  <CardTitle className={`text-xl ${upcoming ? 'text-red-400' : 'text-gray-200'}`}>
                     {race.raceName}
-                  </h2>
+                  </CardTitle>
                   <span className="text-gray-400">Round {race.roundNumber}</span>
                 </div>
                 
                 <div className="space-y-2">
-                  <p className={`${upcoming ? 'text-red-400' : 'text-gray-400'}`}>
+                  <div className="flex items-center text-gray-400">
+                    <Calendar className="w-4 h-4 mr-2" />
                     {new Date(race.raceDate).toLocaleDateString()}
-                  </p>
-                  <p className="text-gray-400">
+                  </div>
+                  <div className="flex items-center text-gray-400">
+                    <MapPin className="w-4 h-4 mr-2" />
                     {race.circuit.name}
-                  </p>
-                  <p className="text-gray-400">
+                  </div>
+                  <div className="flex items-center text-gray-400">
+                    <Flag className="w-4 h-4 mr-2" />
                     {race.circuit.location}, {race.circuit.country}
-                  </p>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Length: {race.circuit.lengthKm} km</span>
-                    <span>Laps: {race.circuit.laps}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
 
-      <RaceResultModal
-        isOpen={selectedRace !== null}
-        onClose={() => setSelectedRace(null)}
-        race={selectedRace}
-        results={selectedRaceResults}
-      />
+      {/* Race Result Modal */}
+      {selectedRace && (
+        <RaceResultModal
+          isOpen={selectedRace !== null}
+          race={selectedRace}
+          results={selectedRaceResults}
+          onClose={() => setSelectedRace(null)}
+        />
+      )}
     </div>
   );
 } 

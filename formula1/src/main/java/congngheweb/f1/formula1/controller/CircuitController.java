@@ -31,6 +31,21 @@ public class CircuitController {
         return circuitService.createCircuit(circuit);
     }
 
+    @PutMapping("/{id}")
+    public Circuit updateCircuit(@PathVariable Long id, @RequestBody Circuit updatedCircuit) {
+        return circuitService.getCircuitById(id)
+            .map(circuit -> {
+                circuit.setName(updatedCircuit.getName());
+                circuit.setLocation(updatedCircuit.getLocation());
+                circuit.setCountry(updatedCircuit.getCountry());
+                circuit.setLengthKm(updatedCircuit.getLengthKm());
+                circuit.setLaps(updatedCircuit.getLaps());
+                circuit.setImageUrl(updatedCircuit.getImageUrl());
+                return circuitService.createCircuit(circuit);
+            })
+            .orElseThrow(() -> new RuntimeException("Circuit not found with id: " + id));
+    }
+
     @DeleteMapping("/{id}")
     public void deleteCircuit(@PathVariable Long id) {
         circuitService.deleteCircuit(id);

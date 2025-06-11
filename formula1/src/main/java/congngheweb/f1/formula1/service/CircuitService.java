@@ -29,4 +29,18 @@ public class CircuitService {
     public void deleteCircuit(Long id) {
         circuitRepository.deleteById(id);
     }
+
+    public Circuit updateCircuit(Long id, Circuit circuitDetails) {
+        Circuit circuit = circuitRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Circuit not found with id: " + id));
+        
+        circuit.setName(circuitDetails.getName());
+        circuit.setLocation(circuitDetails.getLocation());
+        circuit.setCountry(circuitDetails.getCountry());
+        circuit.setLengthKm(circuitDetails.getLengthKm());
+        circuit.setLaps(circuitDetails.getLaps());
+        circuit.setImageUrl(circuitDetails.getImageUrl());
+        
+        return circuitRepository.save(circuit);
+    }
 }

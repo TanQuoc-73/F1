@@ -19,6 +19,7 @@ export default function AdminLayout({
     { name: "Dashboard", href: "/admin" },
     { name: "Seasons", href: "/admin/seasons" },
     { name: "Races", href: "/admin/races" },
+    { name: "Circuits", href: "/admin/circuits" },
     { name: "Drivers", href: "/admin/drivers" },
     { name: "Teams", href: "/admin/teams" },
     { name: "Driver Standings", href: "/admin/driver-standings" },
