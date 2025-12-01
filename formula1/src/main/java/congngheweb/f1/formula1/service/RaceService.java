@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.Race;
 import congngheweb.f1.formula1.repository.RaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,28 +20,28 @@ public class RaceService {
         return raceRepository.findAll();
     }
 
-    public Optional<Race> getRaceById(Long id) {
+    public Optional<Race> getRaceById(@NonNull Long id) {
         return raceRepository.findById(id);
     }
 
-    public Race createRace(Race race) {
+    public Race createRace(@NonNull Race race) {
         return raceRepository.save(race);
     }
 
-    public Race updateRace(Long id, Race race) {
+    public Race updateRace(@NonNull Long id, @NonNull Race race) {
         Race existingRace = raceRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Race not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Race not found"));
+
         existingRace.setRaceName(race.getRaceName());
         existingRace.setRaceDate(race.getRaceDate());
         existingRace.setRoundNumber(race.getRoundNumber());
         existingRace.setSeason(race.getSeason());
         existingRace.setCircuit(race.getCircuit());
-        
+
         return raceRepository.save(existingRace);
     }
 
-    public void deleteRace(Long id) {
+    public void deleteRace(@NonNull Long id) {
         raceRepository.deleteById(id);
     }
 

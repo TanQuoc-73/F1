@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.Circuit;
 import congngheweb.f1.formula1.repository.CircuitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,29 +19,29 @@ public class CircuitService {
         return circuitRepository.findAll();
     }
 
-    public Optional<Circuit> getCircuitById(Long id) {
+    public Optional<Circuit> getCircuitById(@NonNull Long id) {
         return circuitRepository.findById(id);
     }
 
-    public Circuit createCircuit(Circuit circuit) {
+    public Circuit createCircuit(@NonNull Circuit circuit) {
         return circuitRepository.save(circuit);
     }
 
-    public void deleteCircuit(Long id) {
+    public void deleteCircuit(@NonNull Long id) {
         circuitRepository.deleteById(id);
     }
 
-    public Circuit updateCircuit(Long id, Circuit circuitDetails) {
+    public Circuit updateCircuit(@NonNull Long id, @NonNull Circuit circuitDetails) {
         Circuit circuit = circuitRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Circuit not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Circuit not found with id: " + id));
+
         circuit.setName(circuitDetails.getName());
         circuit.setLocation(circuitDetails.getLocation());
         circuit.setCountry(circuitDetails.getCountry());
         circuit.setLengthKm(circuitDetails.getLengthKm());
         circuit.setLaps(circuitDetails.getLaps());
         circuit.setImageUrl(circuitDetails.getImageUrl());
-        
+
         return circuitRepository.save(circuit);
     }
 }

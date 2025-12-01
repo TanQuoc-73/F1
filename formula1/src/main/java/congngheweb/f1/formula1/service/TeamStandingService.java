@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.TeamStanding;
 import congngheweb.f1.formula1.repository.TeamStandingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,18 +19,19 @@ public class TeamStandingService {
         return teamStandingRepository.findAll();
     }
 
-    public Optional<TeamStanding> getById(Long id) {
+    public Optional<TeamStanding> getById(@NonNull Long id) {
         return teamStandingRepository.findById(id);
     }
 
-    public TeamStanding create(TeamStanding teamStanding) {
+    public TeamStanding create(@NonNull TeamStanding teamStanding) {
         return teamStandingRepository.save(teamStanding);
     }
 
-    public void delete(Long id) {
+    public void delete(@NonNull Long id) {
         teamStandingRepository.deleteById(id);
     }
-    public TeamStanding update(Long id, TeamStanding updated) {
+
+    public TeamStanding update(@NonNull Long id, @NonNull TeamStanding updated) {
         return teamStandingRepository.findById(id).map(existing -> {
             existing.setSeason(updated.getSeason());
             existing.setTeam(updated.getTeam());

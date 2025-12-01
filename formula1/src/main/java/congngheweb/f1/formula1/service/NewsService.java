@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.News;
 import congngheweb.f1.formula1.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,15 +19,15 @@ public class NewsService {
         return newsRepository.findAll();
     }
 
-    public Optional<News> getNewsById(Long id) {
+    public Optional<News> getNewsById(@NonNull Long id) {
         return newsRepository.findById(id);
     }
 
-    public News createNews(News news) {
+    public News createNews(@NonNull News news) {
         return newsRepository.save(news);
     }
 
-    public void deleteNews(Long id) {
+    public void deleteNews(@NonNull Long id) {
         newsRepository.deleteById(id);
     }
 

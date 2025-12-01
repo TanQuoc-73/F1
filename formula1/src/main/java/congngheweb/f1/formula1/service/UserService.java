@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.User;
 import congngheweb.f1.formula1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(@NonNull Long id) {
         return userRepository.findById(id);
     }
 
@@ -34,7 +35,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User createUser(User user) {
+    public User createUser(@NonNull User user) {
         // Encode password before saving
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userRepository.save(user);
@@ -49,7 +50,7 @@ public class UserService {
         return false;
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(@NonNull Long id) {
         userRepository.deleteById(id);
     }
 }

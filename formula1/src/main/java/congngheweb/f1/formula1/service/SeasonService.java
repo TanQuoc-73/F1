@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.service;
 import congngheweb.f1.formula1.model.Season;
 import congngheweb.f1.formula1.repository.SeasonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,15 +19,15 @@ public class SeasonService {
         return seasonRepository.findAll();
     }
 
-    public Optional<Season> getById(Long id) {
+    public Optional<Season> getById(@NonNull Long id) {
         return seasonRepository.findById(id);
     }
 
-    public Season create(Season season) {
+    public Season create(@NonNull Season season) {
         return seasonRepository.save(season);
     }
 
-    public void delete(Long id) {
+    public void delete(@NonNull Long id) {
         seasonRepository.deleteById(id);
     }
 
