@@ -85,6 +85,7 @@ export default function Header() {
       <Link href="/" className="flex items-center">
         <Image src="/img/logo.png" alt="Logo" width={125} height={125} className="rounded-full" />
       </Link>
+      
       {/* Navigation */}
       <nav className="flex gap-8 ml-auto mr-10">
         {[
@@ -97,27 +98,51 @@ export default function Header() {
           <div key={item.href} className="relative group">
             <Link
               href={item.href}
-              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg ${
+              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg flex items-center gap-1 ${
                 pathname === item.href ? "text-red-600 sparkles" : ""
               }`}
             >
               {item.label}
+              {item.hasDropdown && (
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-4 w-4 transition-transform group-hover:rotate-180 duration-200" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              )}
               {pathname === item.href && <div className="sparkles-container">{generateSparks()}</div>}
             </Link>
-            {item.hasDropdown && <ScheduleDropdown />}
+            {item.hasDropdown && item.href === "/schedule" && <ScheduleDropdown />}
             {item.hasDropdown && item.href === "/result" && <ResultDropdown />}
           </div>
         ))}
       </nav>
+      
       {/* Login/User */}
       {isAuthenticated ? (
         <div className="relative">
           <button
             ref={buttonRef}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-orange-400 flex items-center justify-center text-white font-bold text-xl shadow hover:scale-105 transition"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-br from-red-600 to-orange-400 text-white font-semibold shadow hover:scale-105 transition"
           >
-            {user?.username.charAt(0).toUpperCase()}
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
+              {user?.username.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-sm">{user?.username}</span>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className={`h-4 w-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
           {isDropdownOpen && (
             <div
