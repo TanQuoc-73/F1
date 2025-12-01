@@ -17,6 +17,9 @@ public class RaceController {
     @Autowired
     private RaceService raceService;
 
+    @Autowired
+    private congngheweb.f1.formula1.dto.DTOMapper dtoMapper;
+
     @GetMapping
     public List<Race> getAllRaces() {
         return raceService.getAllRaces();
@@ -28,6 +31,12 @@ public class RaceController {
             return raceService.getUpcomingRacesWithLimit(limit);
         }
         return raceService.getUpcomingRaces();
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<congngheweb.f1.formula1.dto.RaceDTO>> getRacesSummary() {
+        List<Race> races = raceService.getAllRaces();
+        return ResponseEntity.ok(dtoMapper.toRaceDTOList(races));
     }
 
     @GetMapping("/{id}")

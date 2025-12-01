@@ -34,4 +34,11 @@ public class SeasonService {
         return seasonRepository.findTopByOrderByYearDesc()
                 .orElseThrow(() -> new RuntimeException("No season found"));
     }
+
+    public List<Integer> getAllSeasonYears() {
+        return seasonRepository.findAll().stream()
+                .map(Season::getYear)
+                .sorted((a, b) -> b.compareTo(a)) // Descending order
+                .toList();
+    }
 }

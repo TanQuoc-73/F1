@@ -17,6 +17,9 @@ public class DriverController {
     @Autowired
     private DriverService driverService;
 
+    @Autowired
+    private congngheweb.f1.formula1.dto.DTOMapper dtoMapper;
+
     @GetMapping
     public List<Driver> getAllDrivers() {
         return driverService.getAllDrivers();
@@ -49,9 +52,8 @@ public class DriverController {
 
     @GetMapping("/filter")
     public List<Driver> getDrivers(
-        @RequestParam(required = false) String team,
-        @RequestParam(required = false) String nationality
-    ) {
+            @RequestParam(required = false) String team,
+            @RequestParam(required = false) String nationality) {
         return driverService.filterDrivers(team, nationality);
     }
 
@@ -63,5 +65,13 @@ public class DriverController {
     @GetMapping("/nationalities")
     public ResponseEntity<List<String>> getAllNationalities() {
         return ResponseEntity.ok(driverService.getAllNationalities());
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<congngheweb.f1.formula1.dto.DriverDTO>> getDriversSummary(
+            @RequestParam(required = false) String team,
+            @RequestParam(required = false) String nationality) {
+        List<Driver> drivers = driverService.filterDrivers(team, nationality);
+        return ResponseEntity.ok(dtoMapper.toDriverDTOList(drivers));
     }
 }
