@@ -15,18 +15,32 @@ export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   const [opacity, setOpacity] = useState(1);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const newOpacity = Math.max(1 - scrollY / 100, 0);
+      const currentScrollY = window.scrollY;
+      
+      // Hide header when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
+      // Fade effect for top of page
+      const newOpacity = Math.max(1 - currentScrollY / 300, 0.95);
       setOpacity(newOpacity);
+      
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener("scroll", handleScroll);
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -78,7 +92,9 @@ export default function Header() {
 
   return (
     <header
-      className="w-full h-24 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-opacity duration-300"
+      className={`w-full h-24 bg-black px-10 flex items-center justify-between fixed top-0 left-0 z-50 transition-all duration-300 ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
       style={{ opacity }}
     >
       {/* LOGO */}
@@ -97,14 +113,25 @@ export default function Header() {
           <div key={item.href} className="relative group">
             <Link
               href={item.href}
-              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg ${
+              className={`relative text-gray-200 hover:text-red-600 transition-colors font-medium text-lg flex items-center gap-1 ${
                 pathname === item.href ? "text-red-600 sparkles" : ""
               }`}
             >
               {item.label}
+              {item.hasDropdown && (
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-4 w-4 transition-transform group-hover:rotate-180 duration-200" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              )}
               {pathname === item.href && <div className="sparkles-container">{generateSparks()}</div>}
             </Link>
-            {item.hasDropdown && <ScheduleDropdown />}
+            {item.hasDropdown && item.href === "/schedule" && <ScheduleDropdown />}
             {item.hasDropdown && item.href === "/result" && <ResultDropdown />}
           </div>
         ))}
