@@ -4,6 +4,7 @@ import congngheweb.f1.formula1.model.Driver;
 import congngheweb.f1.formula1.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,17 +27,17 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Driver> getDriverById(@PathVariable Long id) {
+    public Optional<Driver> getDriverById(@PathVariable @NonNull Long id) {
         return driverService.getDriverById(id);
     }
 
     @PostMapping
-    public Driver createDriver(@RequestBody Driver driver) {
+    public Driver createDriver(@RequestBody @NonNull Driver driver) {
         return driverService.createDriver(driver);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Driver> updateDriver(@PathVariable Long id, @RequestBody Driver driver) {
+    public ResponseEntity<Driver> updateDriver(@PathVariable @NonNull Long id, @RequestBody @NonNull Driver driver) {
         try {
             Driver updatedDriver = driverService.updateDriver(id, driver);
             return ResponseEntity.ok(updatedDriver);
@@ -46,7 +47,7 @@ public class DriverController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDriver(@PathVariable Long id) {
+    public void deleteDriver(@PathVariable @NonNull Long id) {
         driverService.deleteDriver(id);
     }
 

@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.controller;
 import congngheweb.f1.formula1.model.Team;
 import congngheweb.f1.formula1.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/teams")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "*")
 public class TeamController {
 
     @Autowired
@@ -22,31 +23,32 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Team> getTeamById(@PathVariable Long id) {
+    public Optional<Team> getTeamById(@PathVariable @NonNull Long id) {
         return teamService.getTeamById(id);
     }
 
     @PostMapping
-    public Team createTeam(@RequestBody Team team) {
+    public Team createTeam(@RequestBody @NonNull Team team) {
         return teamService.createTeam(team);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTeam(@PathVariable Long id) {
+    public void deleteTeam(@PathVariable @NonNull Long id) {
         teamService.deleteTeam(id);
     }
+
     @PutMapping("/{id}")
-    public Team updateTeam(@PathVariable Long id, @RequestBody Team updatedTeam) {
+    public Team updateTeam(@PathVariable @NonNull Long id, @RequestBody @NonNull Team updatedTeam) {
         return teamService.getTeamById(id)
-            .map(team -> {
-                team.setName(updatedTeam.getName());
-                team.setBaseCountry(updatedTeam.getBaseCountry());
-                team.setLogoUrl(updatedTeam.getLogoUrl());
-                team.setPrincipal(updatedTeam.getPrincipal());
-                team.setPowerUnit(updatedTeam.getPowerUnit());
-                return teamService.createTeam(team); 
-            })
-            .orElseThrow(() -> new RuntimeException("Team not found with id: " + id));
+                .map(team -> {
+                    team.setName(updatedTeam.getName());
+                    team.setBaseCountry(updatedTeam.getBaseCountry());
+                    team.setLogoUrl(updatedTeam.getLogoUrl());
+                    team.setPrincipal(updatedTeam.getPrincipal());
+                    team.setPowerUnit(updatedTeam.getPowerUnit());
+                    return teamService.createTeam(team);
+                })
+                .orElseThrow(() -> new RuntimeException("Team not found with id: " + id));
     }
 
 }

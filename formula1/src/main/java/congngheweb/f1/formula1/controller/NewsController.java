@@ -6,6 +6,7 @@ import congngheweb.f1.formula1.service.NewsService;
 import congngheweb.f1.formula1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<News> getNewsById(@PathVariable Long id) {
+    public ResponseEntity<News> getNewsById(@PathVariable @NonNull Long id) {
         return newsService.getNewsById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -64,7 +65,7 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateNews(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> updateNews(@PathVariable @NonNull Long id, @RequestBody Map<String, Object> payload) {
         try {
             Optional<News> existingNewsOpt = newsService.getNewsById(id);
             if (existingNewsOpt.isEmpty()) {
@@ -94,7 +95,7 @@ public class NewsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNews(@PathVariable Long id) {
+    public ResponseEntity<?> deleteNews(@PathVariable @NonNull Long id) {
         try {
             newsService.deleteNews(id);
             return ResponseEntity.ok().build();

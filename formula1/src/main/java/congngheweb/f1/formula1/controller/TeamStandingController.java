@@ -4,6 +4,7 @@ import congngheweb.f1.formula1.model.TeamStanding;
 import congngheweb.f1.formula1.service.TeamStandingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,24 +23,26 @@ public class TeamStandingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeamStanding> getById(@PathVariable Long id) {
+    public ResponseEntity<TeamStanding> getById(@PathVariable @NonNull Long id) {
         return teamStandingService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public TeamStanding create(@RequestBody TeamStanding teamStanding) {
+    public TeamStanding create(@RequestBody @NonNull TeamStanding teamStanding) {
         return teamStandingService.create(teamStanding);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable @NonNull Long id) {
         teamStandingService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<TeamStanding> update(@PathVariable Long id, @RequestBody TeamStanding teamStanding) {
+    public ResponseEntity<TeamStanding> update(@PathVariable @NonNull Long id,
+            @RequestBody @NonNull TeamStanding teamStanding) {
         try {
             return ResponseEntity.ok(teamStandingService.update(id, teamStanding));
         } catch (RuntimeException e) {

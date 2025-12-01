@@ -5,6 +5,7 @@ import congngheweb.f1.formula1.service.UserService;
 import congngheweb.f1.formula1.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable @NonNull Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -73,11 +74,9 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginData.get("username"),
-                    loginData.get("password")
-                )
-            );
+                    new UsernamePasswordAuthenticationToken(
+                            loginData.get("username"),
+                            loginData.get("password")));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = userService.getUserByUsername(loginData.get("username")).get();
@@ -113,13 +112,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable @NonNull Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, String> updateData) {
+    public ResponseEntity<?> updateUser(@PathVariable @NonNull Long id, @RequestBody Map<String, String> updateData) {
         try {
             Optional<User> userOpt = userService.getUserById(id);
             if (userOpt.isEmpty()) {

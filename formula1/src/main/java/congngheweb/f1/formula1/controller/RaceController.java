@@ -4,6 +4,7 @@ import congngheweb.f1.formula1.model.Race;
 import congngheweb.f1.formula1.service.RaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,17 +41,17 @@ public class RaceController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Race> getRaceById(@PathVariable Long id) {
+    public Optional<Race> getRaceById(@PathVariable @NonNull Long id) {
         return raceService.getRaceById(id);
     }
 
     @PostMapping
-    public Race createRace(@RequestBody Race race) {
+    public Race createRace(@RequestBody @NonNull Race race) {
         return raceService.createRace(race);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Race> updateRace(@PathVariable Long id, @RequestBody Race race) {
+    public ResponseEntity<Race> updateRace(@PathVariable @NonNull Long id, @RequestBody @NonNull Race race) {
         try {
             Race updatedRace = raceService.updateRace(id, race);
             return ResponseEntity.ok(updatedRace);
@@ -60,7 +61,7 @@ public class RaceController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRace(@PathVariable Long id) {
+    public void deleteRace(@PathVariable @NonNull Long id) {
         raceService.deleteRace(id);
     }
 }

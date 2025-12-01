@@ -3,6 +3,7 @@ package congngheweb.f1.formula1.controller;
 import congngheweb.f1.formula1.model.DriverStanding;
 import congngheweb.f1.formula1.service.DriverStandingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,17 +23,17 @@ public class DriverStandingController {
     }
 
     @GetMapping("/{id}")
-    public Optional<DriverStanding> getDriverStandingById(@PathVariable Long id) {
+    public Optional<DriverStanding> getDriverStandingById(@PathVariable @NonNull Long id) {
         return driverStandingService.getDriverStandingById(id);
     }
 
     @PostMapping
-    public DriverStanding createDriverStanding(@RequestBody DriverStanding standing) {
+    public DriverStanding createDriverStanding(@RequestBody @NonNull DriverStanding standing) {
         return driverStandingService.createDriverStanding(standing);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDriverStanding(@PathVariable Long id) {
+    public void deleteDriverStanding(@PathVariable @NonNull Long id) {
         driverStandingService.deleteDriverStanding(id);
     }
 }
