@@ -105,114 +105,142 @@ export default function CircuitPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <Loader2 className="w-8 h-8 animate-spin text-red-500" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-center text-white">F1 Circuits</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      {/* Header Section */}
+      <header className="relative overflow-hidden bg-gradient-to-br from-red-600 via-red-700 to-red-900 py-16">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/90" />
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-red-500 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-center bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+            F1 Circuits
+          </h1>
+          <p className="text-xl text-gray-200 text-center mt-4">Explore the world's most iconic racing circuits</p>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-6 py-12">
       
-      {/* Search and Filter Section */}
-      <div className="mb-8 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              type="text"
-              placeholder="Search circuits..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
-            />
+        {/* Search and Filter Section */}
+        <div className="mb-10 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search circuits by name, location, or country..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 pr-4 py-3 bg-gray-800/50 border-gray-700/50 text-white placeholder:text-gray-500 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+              />
+            </div>
+            <div className="w-full md:w-64">
+              <select
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+              >
+                <option value="" className="bg-gray-900">All Countries</option>
+                {countries.map((country) => (
+                  <option key={country} value={country} className="bg-gray-900">
+                    {country}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="w-full md:w-64">
-            <select
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              <option value="">All Countries</option>
-              {countries.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-400 bg-gray-800/50 px-4 py-2 rounded-lg">Found <span className="text-red-400 font-semibold">{filteredCircuits.length}</span> circuits</span>
+            {(searchQuery || selectedCountry) && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCountry('');
+                }}
+                className="text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all"
+              >
+                Clear filters
+              </Button>
+            )}
           </div>
         </div>
-        <div className="flex items-center justify-between text-sm text-gray-400">
-          <span>Found {filteredCircuits.length} circuits</span>
-          {(searchQuery || selectedCountry) && (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCountry('');
-              }}
-              className="text-gray-400 hover:text-white"
-            >
-              Clear filters
-            </Button>
-          )}
-        </div>
-      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCircuits.map((circuit) => (
-          <Card 
-            key={circuit.id} 
-            className="bg-gray-800 hover:bg-gray-700 transition-colors border-gray-700 cursor-pointer"
-            onClick={() => handleCircuitClick(circuit)}
-          >
-            <CardHeader className="relative">
-              {circuit.imageUrl && (
-                <div className="absolute inset-0 overflow-hidden rounded-t-lg">
-                  <img
-                    src={circuit.imageUrl}
-                    alt={circuit.name}
-                    className="w-full h-48 object-cover opacity-10"
-                  />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredCircuits.map((circuit, index) => (
+            <Card 
+              key={circuit.id} 
+              className="group bg-gradient-to-br from-gray-800 to-gray-900 hover:shadow-2xl hover:shadow-red-500/20 transition-all duration-500 border-gray-700/50 hover:border-red-500/50 cursor-pointer hover:-translate-y-2"
+              onClick={() => handleCircuitClick(circuit)}
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <CardHeader className="relative p-0">
+                {circuit.imageUrl && (
+                  <div className="relative h-48 overflow-hidden rounded-t-lg">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
+                    <img
+                      src={circuit.imageUrl}
+                      alt={circuit.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute bottom-4 left-4 z-20">
+                      <CardTitle className="text-2xl font-bold text-white drop-shadow-lg">
+                        {circuit.name}
+                      </CardTitle>
+                    </div>
+                  </div>
+                )}
+                {!circuit.imageUrl && (
+                  <div className="p-6">
+                    <CardTitle className="text-2xl font-bold text-white">
+                      {circuit.name}
+                    </CardTitle>
+                  </div>
+                )}
+              </CardHeader>
+              <CardContent className="space-y-3 p-6 text-gray-300">
+                <div className="flex items-center space-x-3">
+                  <MapPin className="w-5 h-5 text-red-400 flex-shrink-0" />
+                  <span className="text-sm">{circuit.location}</span>
                 </div>
-              )}
-              <CardTitle className="relative z-10 text-2xl font-bold text-white">
-                {circuit.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-gray-300">
-              <div className="flex items-center space-x-2">
-                <MapPin className="w-5 h-5 text-red-400" />
-                <span>{circuit.location}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Flag className="w-5 h-5 text-red-400" />
-                <span>{circuit.country}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Ruler className="w-5 h-5 text-red-400" />
-                <span>{circuit.lengthKm} km</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Timer className="w-5 h-5 text-red-400" />
-                <span>{circuit.laps} laps</span>
-              </div>
-              {user?.role === 'ADMIN' && (
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEdit(circuit);
-                  }}
-                  className="w-full bg-gray-700 hover:bg-gray-600 text-white border-gray-600"
-                  variant="outline"
-                >
-                  Edit Circuit
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                <div className="flex items-center space-x-3">
+                  <Flag className="w-5 h-5 text-red-400 flex-shrink-0" />
+                  <span className="text-sm">{circuit.country}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="flex items-center space-x-2 bg-gray-700/30 p-2 rounded-lg">
+                    <Ruler className="w-4 h-4 text-red-400" />
+                    <span className="text-sm font-medium">{circuit.lengthKm} km</span>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-gray-700/30 p-2 rounded-lg">
+                    <Timer className="w-4 h-4 text-red-400" />
+                    <span className="text-sm font-medium">{circuit.laps} laps</span>
+                  </div>
+                </div>
+                {user?.role === 'ADMIN' && (
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(circuit);
+                    }}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white mt-4 transition-colors"
+                  >
+                    Edit Circuit
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Detail Modal */}

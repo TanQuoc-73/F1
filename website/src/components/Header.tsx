@@ -94,6 +94,7 @@ export default function Header() {
           { href: "/result", label: "Results", hasDropdown: true },
           { href: "/team", label: "Teams" },
           { href: "/driver", label: "Drivers" },
+          { href: "/test", label: "Test" },
         ].map((item) => (
           <div key={item.href} className="relative group">
             <Link
