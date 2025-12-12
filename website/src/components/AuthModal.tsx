@@ -40,7 +40,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       }
     } else {
       try {
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/users/register", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/users/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password, email }),

@@ -57,7 +57,7 @@ interface RaceResult {
   status: string;
 }
 
-const API_URL = "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}`;
 
 async function fetchRaces(): Promise<Race[]> {
   const res = await axios.get(`${API_URL}/races`);

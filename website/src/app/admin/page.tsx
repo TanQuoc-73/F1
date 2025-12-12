@@ -12,7 +12,7 @@ interface Stats {
   totalTeamStandings: number;
 }
 
-const API_URL = "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}`;
 
 export default function AdminPage() {
   const [stats, setStats] = useState<Stats>({
