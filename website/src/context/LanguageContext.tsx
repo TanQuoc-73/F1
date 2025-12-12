@@ -24,17 +24,21 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Load language from localStorage on mount
-    const savedLanguage = localStorage.getItem("language") as Language;
-    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "vi")) {
-      setLanguageState(savedLanguage);
-    }
     setMounted(true);
+    // Load language from localStorage on mount (client-side only)
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem("language") as Language;
+      if (savedLanguage && (savedLanguage === "en" || savedLanguage === "vi")) {
+        setLanguageState(savedLanguage);
+      }
+    }
   }, []);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem("language", lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("language", lang);
+    }
   };
 
   const value: LanguageContextType = {
@@ -43,11 +47,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     t: translations[language],
   };
 
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return null;
-  }
-
+  // Render children immediately but with default language until mounted
+  // This prevents hydration mismatch
   return (
     <LanguageContext.Provider value={value}>
       {children}
