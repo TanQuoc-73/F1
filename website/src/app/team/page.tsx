@@ -77,6 +77,14 @@ export default function TeamPage() {
       fetchDrivers()
     ])
       .then(([standingsData, driversData]) => {
+        // Kiểm tra xem standingsData có phải là array không
+        if (!Array.isArray(standingsData)) {
+          console.error('standingsData is not an array:', standingsData);
+          setError("Invalid data format received from server.");
+          setLoading(false);
+          return;
+        }
+        
         const filtered = standingsData.filter((s: TeamStanding) => s.season.id === selectedSeason.id);
         const sorted = filtered.sort((a: TeamStanding, b: TeamStanding) => a.position - b.position);
         setTeamStandings(sorted);
