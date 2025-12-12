@@ -12,7 +12,8 @@
   }
 }
 
-html, body {
+html,
+body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Barlow", Arial, Helvetica, sans-serif;
@@ -36,7 +37,7 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; 
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -45,7 +46,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff0000; 
+  background: #ff0000;
 }
 
 /* Scroll snap */
@@ -129,11 +130,18 @@ html {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  /* Typography scaling */
   .text-6xl {
     font-size: 3rem;
   }
   .text-5xl {
     font-size: 2.5rem;
+  }
+  .text-4xl {
+    font-size: 2rem;
+  }
+  .text-3xl {
+    font-size: 1.75rem;
   }
   .text-2xl {
     font-size: 1.25rem;
@@ -141,7 +149,69 @@ html {
   .text-xl {
     font-size: 1rem;
   }
+
+  /* Height adjustments */
   .h-96 {
     height: 16rem;
   }
+
+  /* Padding adjustments for better mobile spacing */
+  .section-padding {
+    padding: 3rem 1rem;
+  }
+
+  /* Touch-friendly minimum tap targets */
+  button,
+  a {
+    min-height: 44px;
+  }
+}
+
+/* Additional mobile utilities */
+@media (max-width: 640px) {
+  /* Smaller scrollbar on mobile */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  /* Better spacing for small screens */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .text-6xl {
+    font-size: 4rem;
+  }
+  .text-5xl {
+    font-size: 3rem;
+  }
+}
+
+/* Utility classes for text truncation */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

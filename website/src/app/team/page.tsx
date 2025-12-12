@@ -126,15 +126,15 @@ export default function TeamPage() {
   if (error) return <p className="text-center mt-4 text-red-600">{error}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-4xl font-bold text-center mb-8">F1 Teams</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-6">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8">F1 Teams</h1>
       
       {/* Filters and Search */}
-      <div className="max-w-6xl mx-auto mb-8 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div className="max-w-6xl mx-auto mb-6 md:mb-8 space-y-4">
+        <div className="flex flex-col gap-3 md:gap-4">
           {/* Season Filter */}
           <select
-            className="bg-gray-800 text-white px-4 py-2 rounded w-full md:w-auto"
+            className="bg-gray-800 text-white px-4 py-2.5 md:py-2 rounded w-full text-base"
             value={selectedSeason?.id || ''}
             onChange={e => {
               const season = seasons.find(s => s.id === Number(e.target.value));
@@ -147,16 +147,16 @@ export default function TeamPage() {
           </select>
 
           {/* Search */}
-          <div className="relative w-full md:w-auto">
+          <div className="relative w-full">
             <input
               type="text"
               placeholder="Search teams..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-gray-800 text-white px-4 py-2 rounded w-full md:w-64 pl-10"
+              className="bg-gray-800 text-white px-4 py-2.5 md:py-2 rounded w-full pl-10 text-base"
             />
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              className="absolute left-3 top-3 md:top-2.5 h-5 w-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -171,9 +171,9 @@ export default function TeamPage() {
           </div>
 
           {/* Sort Controls */}
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex gap-2 w-full">
             <select
-              className="bg-gray-800 text-white px-4 py-2 rounded"
+              className="bg-gray-800 text-white px-4 py-2.5 md:py-2 rounded flex-1 text-base"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "position" | "points" | "name")}
             >
@@ -183,7 +183,7 @@ export default function TeamPage() {
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700"
+              className="bg-gray-800 text-white px-4 py-2.5 md:py-2 rounded hover:bg-gray-700 min-w-[50px]"
             >
               {sortOrder === "asc" ? "↑" : "↓"}
             </button>
@@ -191,25 +191,25 @@ export default function TeamPage() {
         </div>
 
         {selectedSeason && (
-          <div className="text-center text-gray-400">Season {selectedSeason.year}</div>
+          <div className="text-center text-gray-400 text-sm md:text-base">Season {selectedSeason.year}</div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
         {filteredStandings.map((standing) => {
           const teamDrivers = drivers.filter(d => d.team.id === standing.team.id);
           return (
             <div
               key={standing.id}
               onClick={() => setSelectedTeam(standing)}
-              className="relative bg-gray-800 rounded-2xl border border-gray-700 shadow-lg p-0 flex flex-col h-[500px] w-full mx-auto overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+              className="relative bg-gray-800 rounded-2xl border border-gray-700 shadow-lg p-0 flex flex-col h-auto md:h-[500px] w-full mx-auto overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
             >
               <div className="flex justify-between items-start px-4 pt-3 pb-3 border-b border-gray-700">
-                <div className="text-3xl font-extrabold text-yellow-400" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
+                <div className="text-2xl md:text-3xl font-extrabold text-yellow-400" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
                   {standing.position}
                 </div>
                 <div className="flex flex-col items-end">
-                  <div className="text-xl font-black text-yellow-400 leading-none">
+                  <div className="text-lg md:text-xl font-black text-yellow-400 leading-none">
                     {standing.points}
                   </div>
                   <div className="text-xs font-black bg-gray-700 text-white px-2 py-1 rounded mt-1 tracking-widest">
@@ -219,28 +219,28 @@ export default function TeamPage() {
               </div>
 
               <div className="flex flex-col items-center px-4 pt-4 pb-2">
-                <div className="flex items-center justify-between gap-4 mb-4 w-full">
+                <div className="flex items-center justify-between gap-2 md:gap-4 mb-4 w-full">
                   {teamDrivers[0]?.imageUrl && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3 flex-1">
                       <img 
                         src={teamDrivers[0].imageUrl} 
                         alt={teamDrivers[0].lastName} 
-                        className="h-12 w-12 object-contain rounded-full border-2 border-gray-600" 
+                        className="h-10 w-10 md:h-12 md:w-12 object-contain rounded-full border-2 border-gray-600" 
                       />
-                      <div className="text-sm text-gray-300">
+                      <div className="text-xs md:text-sm text-gray-300">
                         {teamDrivers[0].firstName} <br />
                         <span className="font-bold text-white">{teamDrivers[0].lastName}</span>
                       </div>
                     </div>
                   )}
                   {teamDrivers[1]?.imageUrl && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3 flex-1">
                       <img 
                         src={teamDrivers[1].imageUrl} 
                         alt={teamDrivers[1].lastName} 
-                        className="h-12 w-12 object-contain rounded-full border-2 border-gray-600" 
+                        className="h-10 w-10 md:h-12 md:w-12 object-contain rounded-full border-2 border-gray-600" 
                       />
-                      <div className="text-sm text-gray-300">
+                      <div className="text-xs md:text-sm text-gray-300">
                         {teamDrivers[1].firstName} <br />
                         <span className="font-bold text-white">{teamDrivers[1].lastName}</span>
                       </div>
@@ -249,14 +249,14 @@ export default function TeamPage() {
                 </div>
                 <div className="flex items-center">
                   <div className="w-1 h-4 bg-red-600 mr-2" />
-                  <div className="text-lg font-extrabold uppercase tracking-wide text-yellow-400 leading-tight" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
+                  <div className="text-base md:text-lg font-extrabold uppercase tracking-wide text-yellow-400 leading-tight" style={{ fontFamily: 'F1Bold,Arial,sans-serif' }}>
                     {standing.team.name}
                   </div>
                 </div>
               </div>
 
               {standing.team.logoUrl && (
-                <div className="flex-none flex items-center justify-center h-48 px-4">
+                <div className="flex-none flex items-center justify-center h-32 md:h-48 px-4">
                   <img 
                     src={standing.team.logoUrl} 
                     alt={standing.team.name} 
@@ -266,11 +266,11 @@ export default function TeamPage() {
               )}
 
               {standing.team.carImageUrl && (
-                <div className="flex-none flex items-center justify-center h-20 px-4 mt-2">
+                <div className="flex-none flex items-center justify-center h-16 md:h-20 px-4 mt-2">
                   <img 
                     src={standing.team.carImageUrl} 
                     alt={standing.team.name} 
-                    className="w-full h-10 object-contain" 
+                    className="w-full h-8 md:h-10 object-contain" 
                   />
                 </div>
               )}
