@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { Race } from "../types";
 
-const API_URL = "http://localhost:8080/races";
+const API_URL = "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/races";
 
 // Simplified: Get all races with circuit details in one call
 export const fetchRaces = async (): Promise<Race[]> => {

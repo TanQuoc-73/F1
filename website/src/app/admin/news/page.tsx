@@ -36,7 +36,7 @@ const NewsAdminPage: React.FC = () => {
   const fetchNews = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/news");
+      const response = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/news");
       const data = await response.json();
       setNews(data);
     } catch (error) {
@@ -57,8 +57,8 @@ const NewsAdminPage: React.FC = () => {
       }
 
       const url = editingNews
-        ? `http://localhost:8080/news/${editingNews.id}`
-        : "http://localhost:8080/news";
+        ? `${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/news/${editingNews.id}`
+        : "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/news";
       
       const method = editingNews ? "PUT" : "POST";
       const payload = {
@@ -99,7 +99,7 @@ const NewsAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`http://localhost:8080/news/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/news/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

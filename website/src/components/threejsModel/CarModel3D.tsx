@@ -71,3 +71,4 @@ export default function CarModel3D({
 
 // Preload the model for better performance
 useGLTF.preload('/models/mclaren_f1.glb');
+

@@ -8,7 +8,7 @@ interface Season {
   year: number;
 }
 
-const API_URL = "http://localhost:8080";
+const API_URL = "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}";
 
 async function fetchSeasons(): Promise<Season[]> {
   const res = await axios.get(`${API_URL}/seasons`);

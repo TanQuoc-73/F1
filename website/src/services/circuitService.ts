@@ -1,7 +1,7 @@
 import { Circuit } from '../types/circuit';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/circuits';
+const API_URL = '${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits';
 
 export const circuitService = {
     getAllCircuits: async (): Promise<Circuit[]> => {

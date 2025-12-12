@@ -81,8 +81,8 @@ export default function RacePage() {
     const fetchData = async () => {
       try {
         const [racesRes, resultsRes] = await Promise.all([
-          fetch("http://localhost:8080/races"),
-          fetch("http://localhost:8080/race-results")
+          fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/races"),
+          fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/race-results")
         ]);
         
         const racesData = await racesRes.json();

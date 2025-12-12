@@ -4,3 +4,4 @@ export interface FilterOptions {
   nationalities: string[];
   seasons: number[];
 }
+

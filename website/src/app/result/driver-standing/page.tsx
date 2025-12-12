@@ -44,8 +44,8 @@ const DriverStandingPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const [res1, res2] = await Promise.all([
-        fetch("http://localhost:8080/driver-standings"),
-        fetch("http://localhost:8080/seasons")
+        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings"),
+        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons")
       ]);
 
       const [data1, data2] = await Promise.all([
@@ -128,3 +128,4 @@ const DriverStandingPage: React.FC = () => {
 };
 
 export default DriverStandingPage;
+
