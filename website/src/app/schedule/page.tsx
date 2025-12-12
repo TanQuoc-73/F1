@@ -43,7 +43,7 @@ export default function SchedulePage() {
   useEffect(() => {
     const fetchSeasons = async () => {
       try {
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`);
         const data = await res.json();
         setSeasons(data);
         if (data.length > 0) {
@@ -66,8 +66,8 @@ export default function SchedulePage() {
       setLoading(true);
       try {
         const [upcomingRacesRes, circuitsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/races/upcoming?limit=3`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits?seasonId=${selectedSeason.id}`)
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/races/upcoming?limit=3`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/circuits?seasonId=${selectedSeason.id}`)
         ]);
 
         const [upcomingRacesData, circuitsData] = await Promise.all([

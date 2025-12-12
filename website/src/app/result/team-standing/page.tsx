@@ -32,8 +32,8 @@ const TeamStandingPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const [standingRes, seasonRes] = await Promise.all([
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons"),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`),
       ]);
 
       const [standingData, seasonData] = await Promise.all([

@@ -64,10 +64,10 @@ const TeamStandingAdminPage: React.FC = () => {
     setIsLoading(true);
     try {
       const [teamsRes, seasonsRes, standingsRes, resultsRes] = await Promise.all([
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/race-results")
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/race-results`)
       ]);
 
       const [teamsData, seasonsData, standingsData, resultsData] = await Promise.all([
@@ -92,7 +92,7 @@ const TeamStandingAdminPage: React.FC = () => {
     setIsLoading(true);
     try {
       // Lấy driver standings cho mùa giải
-      const driverStandingsRes = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings");
+      const driverStandingsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings`);
       const driverStandings: DriverStanding[] = await driverStandingsRes.json();
       
       // Lọc driver standings theo mùa
@@ -149,14 +149,14 @@ const TeamStandingAdminPage: React.FC = () => {
 
         if (existingStanding) {
           // Update existing standing
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings/${existingStanding.id}`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings/${existingStanding.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(standing)
           });
         } else {
           // Create new standing
-          await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings", {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(standing)
@@ -175,7 +175,7 @@ const TeamStandingAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings/${id}`, {
         method: "DELETE"
       });
       setStandings(standings.filter(s => s.id !== id));

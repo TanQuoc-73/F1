@@ -70,7 +70,7 @@ export default function RaceResultsPage() {
   useEffect(() => {
     const fetchRaceResults = async () => {
       try {
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/race-results");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/race-results`);
         const data = await res.json();
         setRaceResults(data);
         

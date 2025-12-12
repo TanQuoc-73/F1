@@ -53,10 +53,10 @@ const DriverStandingAdminPage: React.FC = () => {
     setIsLoading(true);
     try {
       const [driversRes, seasonsRes, standingsRes, resultsRes] = await Promise.all([
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/drivers"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings"),
-        fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/race-results")
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/drivers`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/race-results`)
       ]);
 
       const [driversData, seasonsData, standingsData, resultsData] = await Promise.all([
@@ -116,14 +116,14 @@ const DriverStandingAdminPage: React.FC = () => {
 
         if (existingStanding) {
           // Update existing standing
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings/${existingStanding.id}`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings/${existingStanding.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(standing)
           });
         } else {
           // Create new standing
-          await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings", {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
             body: JSON.stringify(standing)
@@ -142,7 +142,7 @@ const DriverStandingAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings/${id}`, {
       method: "DELETE"
     });
     setStandings(standings.filter(s => s.id !== id));

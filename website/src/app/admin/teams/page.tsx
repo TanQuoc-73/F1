@@ -32,7 +32,7 @@ const TeamAdminPage: React.FC = () => {
   const fetchTeams = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams`);
       const data = await response.json();
       setTeams(data);
     } catch (error) {
@@ -53,8 +53,8 @@ const TeamAdminPage: React.FC = () => {
       }
 
       const url = editingTeam
-        ? `${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams/${editingTeam.id}`
-        : "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams";
+        ? `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams/${editingTeam.id}`
+        : `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams`;
       
       const method = editingTeam ? "PUT" : "POST";
       const payload = {
@@ -110,7 +110,7 @@ const TeamAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams/${id}`, {
         method: "DELETE"
       });
       setTeams(teams.filter(t => t.id !== id));

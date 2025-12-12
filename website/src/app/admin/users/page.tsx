@@ -30,7 +30,7 @@ const UserAdminPage: React.FC = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/users");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/users`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -51,8 +51,8 @@ const UserAdminPage: React.FC = () => {
       }
 
       const url = editingUser
-        ? `${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/users/${editingUser.id}`
-        : "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/users/register";
+        ? `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/users/${editingUser.id}`
+        : `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/users/register`;
       
       const method = editingUser ? "PUT" : "POST";
       const payload = {
@@ -100,7 +100,7 @@ const UserAdminPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/users/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/users/${id}`, {
         method: "DELETE"
       });
       setUsers(users.filter(u => u.id !== id));

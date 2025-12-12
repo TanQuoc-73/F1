@@ -29,7 +29,7 @@ export default function CircuitsAdminPage() {
   }, []);
 
   const fetchCircuits = async () => {
-    const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/circuits`);
     const data = await res.json();
     setCircuits(data);
   };
@@ -38,8 +38,8 @@ export default function CircuitsAdminPage() {
     e.preventDefault();
     const method = editingId ? "PUT" : "POST";
     const url = editingId
-      ? `${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits/${editingId}`
-      : "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits";
+      ? `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/circuits/${editingId}`
+      : `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/circuits`;
 
     await fetch(url, {
       method,
@@ -62,7 +62,7 @@ export default function CircuitsAdminPage() {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/circuits/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/circuits/${id}`, {
       method: "DELETE",
     });
     fetchCircuits();

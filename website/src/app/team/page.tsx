@@ -51,7 +51,7 @@ export default function TeamPage() {
   // Fetch all seasons and set default to latest
   useEffect(() => {
     const fetchSeasons = async () => {
-      const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`);
       const data = await res.json();
       setSeasons(data);
       if (data.length > 0) {
@@ -73,7 +73,7 @@ export default function TeamPage() {
     setTeamStandings([]);
     setFilteredStandings([]);
     Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/team-standings?seasonId=${selectedSeason.id}`).then(res => res.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/team-standings?seasonId=${selectedSeason.id}`).then(res => res.json()),
       fetchDrivers()
     ])
       .then(([standingsData, driversData]) => {

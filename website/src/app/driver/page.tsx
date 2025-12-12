@@ -50,7 +50,7 @@ export default function DriverPage() {
   // Fetch all seasons and set default to latest
   useEffect(() => {
     const fetchSeasons = async () => {
-      const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/seasons");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/seasons`);
       const data = await res.json();
       setSeasons(data);
       if (data.length > 0) {
@@ -72,7 +72,7 @@ export default function DriverPage() {
     setStandings([]);
     setFilteredStandings([]);
     const fetchData = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/driver-standings?seasonId=${selectedSeason.id}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/driver-standings?seasonId=${selectedSeason.id}`);
       const data = await res.json();
       const filtered = data.filter((s: DriverStanding) => s.season.id === selectedSeason.id);
       const sorted = filtered.sort((a: DriverStanding, b: DriverStanding) => a.position - b.position);

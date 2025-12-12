@@ -42,13 +42,13 @@ export default function DriversAdminPage() {
   }, []);
 
   const fetchDrivers = async () => {
-    const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/drivers");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/drivers`);
     const data = await res.json();
     setDrivers(data);
   };
 
   const fetchTeams = async () => {
-    const res = await fetch("${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/teams");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/teams`);
     const data = await res.json();
     setTeams(data);
   };
@@ -57,8 +57,8 @@ export default function DriversAdminPage() {
     e.preventDefault();
     const method = editingId ? "PUT" : "POST";
     const url = editingId
-      ? `${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/drivers/${editingId}`
-      : "${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/drivers";
+      ? `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/drivers/${editingId}`
+      : `${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/drivers`;
 
     await fetch(url, {
       method,
@@ -91,7 +91,7 @@ export default function DriversAdminPage() {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this driver?")) return;
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL || \"https://f1-1-gslk.onrender.com\"}/drivers/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://f1-1-gslk.onrender.com"}/drivers/${id}`, {
       method: "DELETE",
     });
     fetchDrivers();
