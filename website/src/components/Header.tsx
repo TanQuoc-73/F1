@@ -7,10 +7,13 @@ import React, { useEffect, useState, useRef } from "react";
 import ScheduleDropdown from "./nav/ScheduleDropdown";
 import ResultDropdown from "./nav/ResultDropdown";
 import AuthModal from "./AuthModal";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Header() {
   const { user, isAuthenticated, logout, role } = useAuth();
+  const { t } = useLanguage();
   const [authOpen, setAuthOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -97,11 +100,11 @@ export default function Header() {
   };
 
   const navItems = [
-    { href: "/new", label: "News" },
-    { href: "/schedule", label: "Schedule", hasDropdown: true },
-    { href: "/result", label: "Results", hasDropdown: true },
-    { href: "/team", label: "Teams" },
-    { href: "/driver", label: "Drivers" },
+    { href: "/new", label: t.nav.news },
+    { href: "/schedule", label: t.nav.schedule, hasDropdown: true },
+    { href: "/result", label: t.nav.results, hasDropdown: true },
+    { href: "/team", label: t.nav.teams },
+    { href: "/driver", label: t.nav.drivers },
     { href: "/test", label: "Test" },
   ];
 
@@ -151,8 +154,9 @@ export default function Header() {
         ))}
       </nav>
       
-      {/* Desktop Login/User */}
-      <div className="hidden lg:block">
+      {/* Desktop Language Switcher & Login/User */}
+      <div className="hidden lg:flex items-center gap-4">
+        <LanguageSwitcher />
         {isAuthenticated ? (
           <div className="relative">
             <button
@@ -181,21 +185,21 @@ export default function Header() {
               >
                 <div className="px-4 py-3 text-gray-200 border-b border-gray-700 text-lg">{user?.username}</div>
                 <Link href="/profile" className="block px-4 py-3 text-gray-200 hover:bg-gray-700 transition-colors text-lg">
-                  Profile
+                  {t.nav.profile}
                 </Link>
                 <Link href="/settings" className="block px-4 py-3 text-gray-200 hover:bg-gray-700 transition-colors text-lg">
-                  Settings
+                  {t.nav.settings}
                 </Link>
                 {role === "admin" && (
                   <Link href="/admin" className="block px-4 py-3 text-blue-400 hover:bg-blue-700 hover:text-white transition-colors text-lg">
-                    Admin Panel
+                    {t.nav.adminPanel}
                   </Link>
                 )}
                 <button
                   onClick={logout}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-600 hover:text-white transition-colors rounded-b text-lg"
                 >
-                  Log out
+                  {t.nav.logout}
                 </button>
               </div>
             )}
@@ -205,7 +209,7 @@ export default function Header() {
             onClick={() => setAuthOpen(true)}
             className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors font-semibold shadow text-lg"
           >
-            SIGN IN
+            {t.nav.signIn}
           </button>
         )}
       </div>
@@ -234,6 +238,11 @@ export default function Header() {
         } z-40 overflow-y-auto`}
       >
         <div className="pt-20 px-6 pb-6">
+          {/* Mobile Language Switcher */}
+          <div className="mb-6">
+            <LanguageSwitcher />
+          </div>
+
           {/* Mobile Navigation Links */}
           <nav className="space-y-2">
             {navItems.map((item) => (
@@ -310,21 +319,21 @@ export default function Header() {
                   <span className="text-white font-semibold">{user?.username}</span>
                 </div>
                 <Link href="/profile" className="block px-4 py-3 text-gray-200 hover:bg-gray-800 rounded transition-colors">
-                  Profile
+                  {t.nav.profile}
                 </Link>
                 <Link href="/settings" className="block px-4 py-3 text-gray-200 hover:bg-gray-800 rounded transition-colors">
-                  Settings
+                  {t.nav.settings}
                 </Link>
                 {role === "admin" && (
                   <Link href="/admin" className="block px-4 py-3 text-blue-400 hover:bg-blue-900 rounded transition-colors">
-                    Admin Panel
+                    {t.nav.adminPanel}
                   </Link>
                 )}
                 <button
                   onClick={logout}
                   className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-900 rounded transition-colors"
                 >
-                  Log out
+                  {t.nav.logout}
                 </button>
               </div>
             ) : (
@@ -335,7 +344,7 @@ export default function Header() {
                 }}
                 className="w-full bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 transition-colors font-semibold shadow"
               >
-                SIGN IN
+                {t.nav.signIn}
               </button>
             )}
           </div>

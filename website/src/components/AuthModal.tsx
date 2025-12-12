@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
 interface AuthModalProps {
@@ -11,6 +12,7 @@ interface AuthModalProps {
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { login, user, role } = useAuth();
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsernameState] = useState("");
   const [password, setPassword] = useState("");
@@ -30,13 +32,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       try {
         const success = await login(username, password);
         if (success) {
-          setMessage("Login successful!");
+          setMessage(t.auth.loginSuccessful);
           onClose();
         } else {
-          setMessage("Invalid username or password");
+          setMessage(t.auth.invalidCredentials);
         }
       } catch (error) {
-        setMessage("An error occurred. Please try again.");
+        setMessage(t.auth.errorOccurred);
       }
     } else {
       try {
@@ -49,14 +51,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         const text = await res.text();
 
         if (!res.ok) {
-          setMessage(text || "Registration failed.");
+          setMessage(text || t.auth.registrationFailed);
           return;
         }
 
-        setMessage("Registration successful!");
+        setMessage(t.auth.registrationSuccessful);
         setIsLogin(true);
       } catch (error) {
-        setMessage("An error occurred. Please try again.");
+        setMessage(t.auth.errorOccurred);
       }
     }
     setIsLoading(false);
@@ -76,22 +78,22 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isLogin ? t.auth.welcomeBack : t.auth.createAccount}
           </h2>
           <p className="text-gray-400 text-sm">
-            {isLogin ? "Sign in to your account" : "Join our community"}
+            {isLogin ? t.auth.signInSubtitle : t.auth.joinCommunity}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="username" className="block text-sm font-medium text-gray-300">
-              Username
+              {t.auth.username}
             </label>
             <input
               id="username"
               type="text"
-              placeholder="Enter your username"
+              placeholder={t.auth.enterUsername}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
               value={username}
               onChange={(e) => setUsernameState(e.target.value)}
@@ -102,12 +104,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {!isLogin && (
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                Email
+                {t.auth.email}
               </label>
               <input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t.auth.enterEmail}
                 className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -119,7 +121,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-                Password
+                {t.auth.password}
               </label>
               {isLogin && (
                 <button
@@ -127,14 +129,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   onClick={() => setShowForgotPassword(true)}
                   className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                 >
-                  Forgot password?
+                  {t.auth.forgotPassword}
                 </button>
               )}
             </div>
             <input
               id="password"
               type="password"
-              placeholder="Enter your password"
+              placeholder={t.auth.enterPassword}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -153,10 +155,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Processing...
+                {t.auth.processing}
               </div>
             ) : (
-              isLogin ? "Sign In" : "Create Account"
+              isLogin ? t.auth.signIn : t.auth.createAccount
             )}
           </button>
         </form>
@@ -170,7 +172,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            Admin Dashboard
+            {t.auth.adminDashboard}
           </button>
         )}
 
@@ -187,22 +189,22 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <div className="text-sm text-center mt-6 text-gray-400">
           {isLogin ? (
             <>
-              Don't have an account?{" "}
+              {t.auth.dontHaveAccount}{" "}
               <button
                 onClick={() => setIsLogin(false)}
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
-                Register
+                {t.auth.register}
               </button>
             </>
           ) : (
             <>
-              Already have an account?{" "}
+              {t.auth.alreadyHaveAccount}{" "}
               <button
                 onClick={() => setIsLogin(true)}
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
-                Sign In
+                {t.auth.signIn}
               </button>
             </>
           )}
